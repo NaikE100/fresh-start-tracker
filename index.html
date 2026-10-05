@@ -1,30 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh Start Laundromat - Operations & Financial Tracker</title>
+  <title>Fresh Start Laundromat - Operations & Revenue Tracker</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          },
           colors: {
             brand: {
-              50: '#ecfeff',
-              100: '#cffaff',
-              200: '#a5f3fc',
-              300: '#67e8f9',
-              400: '#22d3ee',
-              500: '#06b6d4',
-              600: '#0891b2',
-              700: '#0e7490',
-              800: '#155e75',
-              900: '#164e63',
-              950: '#083344',
+              cyan: '#06b6d4',
+              teal: '#14b8a6',
+              emerald: '#10b981',
+              darkBg: '#0b1324',
+              cardBg: '#131e36',
+              inputBg: '#1c2a4a',
+              border: '#2a3a5e'
             }
           }
         }
@@ -32,1848 +38,1167 @@
     }
   </script>
   
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Chart.js for Visualizations -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <!-- Custom Styling for Scrollbars & Canvas -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     body {
+      background-color: #0b1324;
+      color: #f1f5f9;
       font-family: 'Inter', sans-serif;
     }
-    .custom-scrollbar::-webkit-scrollbar {
+    /* Custom scrollbar styling for tables */
+    ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
+    ::-webkit-scrollbar-track {
+      background: #0b1324;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #0891b2;
+    ::-webkit-scrollbar-thumb {
+      background: #2a3a5e;
       border-radius: 4px;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    ::-webkit-scrollbar-thumb:hover {
       background: #06b6d4;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white antialiased">
 
-  <!-- HEADER & NAVIGATION BANNER -->
-  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-30 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white">
+
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
         
-        <!-- Brand & Location -->
-        <div class="flex items-center space-x-3.5">
-          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 ring-1 ring-white/20">
-            <i class="fa-solid font-bold fa-soap text-xl"></i>
+        <!-- Header Branding & Logo -->
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0 bg-white/5 p-1.5 rounded-xl border border-slate-700/60 shadow-inner">
+            <img src="logo.png" alt="Fresh Start Laundromat" class="h-12 w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/180x60/0b1324/06b6d4?text=Fresh+Start';">
           </div>
           <div>
-            <div class="flex items-center space-x-2">
-              <h1 class="text-xl font-extrabold tracking-tight text-white">Fresh Start Laundromat</h1>
-              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-900/80 text-brand-300 border border-brand-700/50">George, WC</span>
-            </div>
-            <p class="text-xs text-slate-400 flex items-center space-x-2 mt-0.5">
-              <span><i class="fa-solid fa-location-dot text-brand-400 mr-1"></i>George, Western Cape</span>
-              <span class="text-slate-600">•</span>
-              <span><i class="fa-solid fa-phone text-brand-400 mr-1"></i>+27 74 545 3092</span>
-            </p>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
+              Fresh Start Laundromat
+            </h1>
+            <p class="text-xs text-slate-400 font-medium hidden sm:block">Operations, Revenue & Staff Tracking Suite</p>
           </div>
         </div>
 
-        <!-- Sync Status Badge & Action Controls -->
-        <div class="flex items-center flex-wrap gap-2.5">
-          <!-- Database Cloud Badge -->
-          <div id="syncBadge" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300 shadow-inner">
-            <span id="syncDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 mr-2 animate-pulse"></span>
-            <span id="syncStatusText">Connecting Supabase...</span>
+        <!-- Right Header Status & Controls -->
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <!-- Active Shift Operator Badge -->
+          <div class="bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5 flex items-center space-x-2 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-400 hidden md:inline">Current Shift:</span>
+            <span id="header-active-operator" class="font-bold text-cyan-300">Staff On Duty</span>
           </div>
 
-          <!-- Quick Action Buttons -->
-          <button onclick="openSqlModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-code text-brand-400"></i>
-            <span>SQL Setup</span>
-          </button>
-
-          <button onclick="seedSampleData()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-950 hover:bg-brand-900 text-brand-300 border border-brand-700/60 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-database text-brand-400"></i>
-            <span>Seed Demo Data</span>
+          <!-- Supabase Cloud Sync Modal Trigger -->
+          <button onclick="toggleSupabaseModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-2">
+            <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i>
+            <span class="hidden md:inline">Cloud Sync</span>
           </button>
         </div>
 
       </div>
-    </div>
-
-    <!-- MAIN NAVIGATION TABS -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-1">
-      <nav class="flex space-x-1 overflow-x-auto custom-scrollbar border-t border-slate-800/80 pt-1 pb-2" aria-label="Tabs">
-        
-        <button onclick="switchTab('tab-entry')" id="nav-tab-entry" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 bg-brand-600 text-white shadow-md">
-          <i class="fa-solid fa-pen-to-square"></i>
-          <span>Daily Log Entry</span>
-        </button>
-
-        <button onclick="switchTab('tab-dashboard')" id="nav-tab-dashboard" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>Dashboard & Analytics</span>
-        </button>
-
-        <button onclick="switchTab('tab-payroll')" id="nav-tab-payroll" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
-          <i class="fa-solid fa-users-gear"></i>
-          <span>Payroll & Timecards</span>
-        </button>
-
-        <button onclick="switchTab('tab-transport')" id="nav-tab-transport" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
-          <i class="fa-solid fa-truck-ramp-box"></i>
-          <span>Transport & Deliveries</span>
-        </button>
-
-        <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <span>Operations History</span>
-        </button>
-
-        <button onclick="switchTab('tab-settings')" id="nav-tab-settings" class="nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
-          <i class="fa-solid fa-cloud-bolt"></i>
-          <span>Database & Cloud</span>
-        </button>
-
-      </nav>
     </div>
   </header>
 
-  <!-- MAIN APP BODY -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-20 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
-
-    <!-- TAB 1: DAILY LOG ENTRY FORM -->
-    <section id="tab-entry" class="tab-content block space-y-6">
-      
-      <form id="dailyLogForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+  <nav class="bg-slate-900/60 border-b border-slate-800/80 sticky top-20 z-30 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex space-x-2 sm:space-x-4 overflow-x-auto py-2.5 no-scrollbar">
         
-        <!-- Header Bar for Entry -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <button id="tab-btn-shifts" onclick="switchTab('shifts')" class="tab-btn bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap shadow-md transition-all">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>Shift Logs & Overview</span>
+        </button>
+
+        <button id="tab-btn-payroll" onclick="switchTab('payroll')" class="tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>Payroll & Hours</span>
+        </button>
+
+        <button id="tab-btn-transport" onclick="switchTab('transport')" class="tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-truck-fast"></i>
+          <span>Transport Log</span>
+        </button>
+
+        <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics & Reports</span>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: SHIFT LOGS & OVERVIEW               -->
+    <!-- ========================================== -->
+    <div id="tab-view-shifts" class="tab-view space-y-6">
+      
+      <!-- Top Overview Stats Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <!-- Stat Card 1: Daily Revenue -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-calendar-day text-brand-400"></i>
-              <span id="formTitle">Record Daily Operations Log</span>
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">Capture daily income, utility metrics, staff hours, and delivery routes for George laundromat.</p>
+            <p class="text-xs text-slate-400 font-medium">Today's Revenue</p>
+            <h3 id="stat-daily-revenue" class="text-xl sm:text-2xl font-black text-emerald-400 mt-1">R 0.00</h3>
+            <p class="text-[10px] text-slate-500 mt-0.5">Cash + Card Combined</p>
           </div>
-          
-          <div class="flex items-center space-x-3">
-            <label class="text-xs font-medium text-slate-300 whitespace-nowrap">Log Date:</label>
-            <input type="date" id="inputDate" required class="bg-slate-950 border border-slate-700 text-white text-sm rounded-xl px-3 py-2 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg">
+            <i class="fa-solid fa-sack-dollar"></i>
           </div>
         </div>
 
-        <!-- Utility Rates Config Box -->
-        <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
-          <div class="flex items-center space-x-2 text-slate-300">
-            <i class="fa-solid fa-bolt text-amber-400 text-sm"></i>
-            <span class="font-semibold text-slate-200">Active Utility Rates (George Municipality):</span>
+        <!-- Stat Card 2: Total Machine Cycles -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Cycles Today</p>
+            <h3 id="stat-daily-cycles" class="text-xl sm:text-2xl font-black text-cyan-400 mt-1">0</h3>
+            <p class="text-[10px] text-slate-500 mt-0.5"><span id="stat-washer-count">0</span> Wash / <span id="stat-dryer-count">0</span> Dry</p>
           </div>
-          <div class="flex flex-wrap items-center gap-4">
-            <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <span class="text-slate-400">Electricity:</span>
-              <span class="font-mono text-amber-300 font-bold">R</span>
-              <input type="number" id="rateElectricity" step="0.01" value="3.20" oninput="calculateTotals()" class="w-16 bg-transparent text-amber-300 font-mono font-bold focus:outline-none">
-              <span class="text-slate-500">/ kWh</span>
-            </div>
-
-            <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <span class="text-slate-400">Water:</span>
-              <span class="font-mono text-cyan-300 font-bold">R</span>
-              <input type="number" id="rateWater" step="0.01" value="35.00" oninput="calculateTotals()" class="w-16 bg-transparent text-cyan-300 font-mono font-bold focus:outline-none">
-              <span class="text-slate-500">/ kL</span>
-            </div>
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg">
+            <i class="fa-solid fa-rotate"></i>
           </div>
         </div>
 
-        <!-- Main Input Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          
-          <!-- Gross Revenue -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Gross Income</span>
-              <i class="fa-solid fa-cash-register text-emerald-400/80 text-lg"></i>
-            </div>
-            <label class="block text-xs text-slate-400 mb-1">Total Daily Revenue (ZAR)</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 font-semibold">R</span>
-              <input type="number" id="inputGrossIncome" step="0.01" min="0" placeholder="0.00" oninput="calculateTotals()" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-8 pr-3 py-2.5 text-lg font-bold font-mono focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-            </div>
-            <p class="text-[11px] text-slate-500 mt-2">Wash & Fold + Over-the-counter</p>
+        <!-- Stat Card 3: Active Operator -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Active Staff</p>
+            <h3 id="stat-active-operator" class="text-lg sm:text-xl font-bold text-slate-100 truncate max-w-[120px] mt-1">None</h3>
+            <p class="text-[10px] text-slate-500 mt-0.5">Last Logged Operator</p>
           </div>
-
-          <!-- Machine Cycles -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-semibold text-brand-400 uppercase tracking-wider">Machine Cycles</span>
-              <i class="fa-solid fa-rotate text-brand-400 text-lg"></i>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-1">
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Wash Cycles</label>
-                <input type="number" id="inputWashCycles" min="0" value="0" oninput="calculateTotals()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-sm font-semibold font-mono focus:ring-2 focus:ring-brand-500 outline-none">
-              </div>
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Dryer Cycles</label>
-                <input type="number" id="inputDryerCycles" min="0" value="0" oninput="calculateTotals()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-sm font-semibold font-mono focus:ring-2 focus:ring-brand-500 outline-none">
-              </div>
-            </div>
-            <p class="text-[11px] text-slate-500 mt-2">Total load count tracker</p>
-          </div>
-
-          <!-- Utility Consumption -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Utilities Usage</span>
-              <i class="fa-solid fa-faucet-drip text-cyan-400 text-lg"></i>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-1">
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Electricity (kWh)</label>
-                <input type="number" id="inputElectricityKwh" step="0.1" min="0" placeholder="0.0" oninput="calculateTotals()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-sm font-semibold font-mono focus:ring-2 focus:ring-amber-500 outline-none">
-              </div>
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Water (kL)</label>
-                <input type="number" id="inputWaterKl" step="0.1" min="0" placeholder="0.0" oninput="calculateTotals()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-sm font-semibold font-mono focus:ring-2 focus:ring-cyan-500 outline-none">
-              </div>
-            </div>
-            <p class="text-[11px] text-slate-500 mt-2">Calculated at current meter rates</p>
-          </div>
-
-          <!-- Direct Shop Expenses -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-semibold text-rose-400 uppercase tracking-wider">Direct Shop Expenses</span>
-              <i class="fa-solid fa-boxes-packing text-rose-400 text-lg"></i>
-            </div>
-            <label class="block text-xs text-slate-400 mb-1">Detergents, Softener & Packaging</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 font-semibold">R</span>
-              <input type="number" id="inputDirectExpenses" step="0.01" min="0" placeholder="0.00" oninput="calculateTotals()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl pl-8 pr-3 py-2.5 text-sm font-semibold font-mono focus:ring-2 focus:ring-rose-500 outline-none">
-            </div>
-            <p class="text-[11px] text-slate-500 mt-2">Daily consumables purchased</p>
-          </div>
-
-        </div>
-
-        <!-- DYNAMIC SUB-SECTIONS: EMPLOYEES & TRANSPORT -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Employee Timecard Sub-Form -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-3">
-                <div>
-                  <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-user-clock text-brand-400"></i>
-                    <span>Employee Timecards & Payroll</span>
-                  </h3>
-                  <p class="text-xs text-slate-400">Clock hours worked for George branch staff</p>
-                </div>
-                <button type="button" onclick="addEmployeeRow()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-1">
-                  <i class="fa-solid fa-plus"></i>
-                  <span>Add Staff</span>
-                </button>
-              </div>
-
-              <!-- Quick Worker Templates -->
-              <div class="mb-4">
-                <span class="text-[11px] font-medium text-slate-400 block mb-1.5">Quick Staff Presets:</span>
-                <div class="flex flex-wrap gap-1.5">
-                  <button type="button" onclick="quickAddWorker('Thandi', 8, 38)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-brand-300 border border-slate-800 rounded-lg transition">+ Thandi (R38/h)</button>
-                  <button type="button" onclick="quickAddWorker('Sipho', 8, 35)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-brand-300 border border-slate-800 rounded-lg transition">+ Sipho (R35/h)</button>
-                  <button type="button" onclick="quickAddWorker('Johan', 7.5, 45)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-brand-300 border border-slate-800 rounded-lg transition">+ Johan (R45/h)</button>
-                  <button type="button" onclick="quickAddWorker('Anelisa', 8, 36)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-brand-300 border border-slate-800 rounded-lg transition">+ Anelisa (R36/h)</button>
-                </div>
-              </div>
-
-              <!-- Employee Rows Table -->
-              <div class="space-y-2 max-h-56 overflow-y-auto pr-1 custom-scrollbar" id="employeeList">
-                <!-- Dynamic Rows Inserted Here -->
-              </div>
-            </div>
-
-            <!-- Total Staff Expense Summary -->
-            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
-              <span class="text-slate-400 font-semibold">Total Daily Payroll Cost:</span>
-              <span class="font-mono text-base font-bold text-indigo-400" id="displayLaborCost">R 0.00</span>
-            </div>
-          </div>
-
-          <!-- Transport & Delivery Sub-Form -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-3">
-                <div>
-                  <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-truck-pickup text-emerald-400"></i>
-                    <span>Transport & Pickup/Delivery Logs</span>
-                  </h3>
-                  <p class="text-xs text-slate-400">Log client laundry deliveries around George area</p>
-                </div>
-                <button type="button" onclick="addTripRow()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1">
-                  <i class="fa-solid fa-plus"></i>
-                  <span>Add Trip</span>
-                </button>
-              </div>
-
-              <!-- Quick Route Presets -->
-              <div class="mb-4">
-                <span class="text-[11px] font-medium text-slate-400 block mb-1.5">Quick Route Presets (George & Surrounds):</span>
-                <div class="flex flex-wrap gap-1.5">
-                  <button type="button" onclick="quickAddTrip('Johan', 'CBD -> Wilderness Hotel', 24, 6.5)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-emerald-300 border border-slate-800 rounded-lg transition">+ Wilderness (24km)</button>
-                  <button type="button" onclick="quickAddTrip('Johan', 'Shop -> Heatherlands Pickup', 8, 6.5)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-emerald-300 border border-slate-800 rounded-lg transition">+ Heatherlands (8km)</button>
-                  <button type="button" onclick="quickAddTrip('Sipho', 'Shop -> Kingswood Estate', 12, 6.5)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-emerald-300 border border-slate-800 rounded-lg transition">+ Kingswood (12km)</button>
-                  <button type="button" onclick="quickAddTrip('Sipho', 'Shop -> Blanco Commercial', 14, 6.5)" class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-xs text-emerald-300 border border-slate-800 rounded-lg transition">+ Blanco (14km)</button>
-                </div>
-              </div>
-
-              <!-- Trip Rows Table -->
-              <div class="space-y-2 max-h-56 overflow-y-auto pr-1 custom-scrollbar" id="tripList">
-                <!-- Dynamic Rows Inserted Here -->
-              </div>
-            </div>
-
-            <!-- Total Transport Summary -->
-            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
-              <span class="text-slate-400 font-semibold">Total Transport Expense:</span>
-              <span class="font-mono text-base font-bold text-emerald-400" id="displayTransportCost">R 0.00</span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- REAL-TIME CALCULATED FINANCIAL SUMMARY BAR -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-brand-500/30 rounded-2xl p-6 shadow-2xl">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-brand-400 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-calculator"></i>
-            <span>Live Calculation Breakdown</span>
-          </h3>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-center">
-            
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Gross Income</span>
-              <span id="calcGross" class="font-mono text-base font-bold text-emerald-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Electricity Cost</span>
-              <span id="calcElectricity" class="font-mono text-base font-bold text-amber-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Water Cost</span>
-              <span id="calcWater" class="font-mono text-base font-bold text-cyan-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Labor Cost</span>
-              <span id="calcLabor" class="font-mono text-base font-bold text-indigo-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Transport & Supplies</span>
-              <span id="calcOther" class="font-mono text-base font-bold text-rose-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 ring-1 ring-rose-500/30">
-              <span class="text-[11px] text-slate-400 block mb-0.5">Total Expenses</span>
-              <span id="calcTotalExpenses" class="font-mono text-base font-bold text-rose-400">R 0.00</span>
-            </div>
-
-            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 ring-2 ring-emerald-500/50 col-span-2 md:col-span-1">
-              <span class="text-[11px] text-slate-300 block mb-0.5">Net Daily Profit</span>
-              <span id="calcNetProfit" class="font-mono text-lg font-black text-emerald-400">R 0.00</span>
-              <span id="calcMargin" class="text-[10px] font-mono text-emerald-300 block">0.0% margin</span>
-            </div>
-
-          </div>
-
-          <!-- Form Action Buttons -->
-          <div class="mt-6 flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-800">
-            <button type="button" onclick="resetForm()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
-              Reset Form
-            </button>
-            <button type="submit" class="w-full sm:w-auto px-8 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-600 to-cyan-500 hover:from-brand-500 hover:to-cyan-400 text-white shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-cloud-arrow-up"></i>
-              <span id="saveBtnText">Save Daily Log Entry</span>
-            </button>
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-lg">
+            <i class="fa-solid fa-user-check"></i>
           </div>
         </div>
 
-      </form>
-
-    </section>
-
-    <!-- TAB 2: FINANCIAL DASHBOARD & ANALYTICS -->
-    <section id="tab-dashboard" class="tab-content hidden space-y-6">
-      
-      <!-- Filter Bar -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <h2 class="text-base font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-brand-400"></i>
-            <span>Financial & Operational Analytics</span>
-          </h2>
-          <p class="text-xs text-slate-400">Performance insights for Fresh Start Laundromat (George)</p>
-        </div>
-
-        <div class="flex items-center space-x-2">
-          <span class="text-xs text-slate-400">Period:</span>
-          <select id="dashboardRange" onchange="updateDashboard()" class="bg-slate-950 border border-slate-700 text-white text-xs rounded-xl px-3 py-2 outline-none focus:border-brand-500">
-            <option value="all" selected>All Time</option>
-            <option value="7">Last 7 Days</option>
-            <option value="30">Last 30 Days</option>
-            <option value="thisMonth">This Month</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- KPI Summary Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Total Revenue</span>
-          <div id="kpiRevenue" class="text-lg font-bold font-mono text-emerald-400">R 0.00</div>
-          <span class="text-[10px] text-slate-500 mt-1 block">Gross earnings</span>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Total Expenses</span>
-          <div id="kpiExpenses" class="text-lg font-bold font-mono text-rose-400">R 0.00</div>
-          <span class="text-[10px] text-slate-500 mt-1 block">All operational costs</span>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Net Profit</span>
-          <div id="kpiNetProfit" class="text-lg font-bold font-mono text-emerald-400">R 0.00</div>
-          <span id="kpiProfitMargin" class="text-[10px] font-mono text-emerald-300 block mt-1">0.0% margin</span>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Avg Daily Profit</span>
-          <div id="kpiAvgProfit" class="text-lg font-bold font-mono text-cyan-400">R 0.00</div>
-          <span class="text-[10px] text-slate-500 mt-1 block">Per logged day</span>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Wash Loads</span>
-          <div id="kpiWashCycles" class="text-lg font-bold font-mono text-brand-400">0</div>
-          <span class="text-[10px] text-slate-500 mt-1 block">Washing machine runs</span>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs font-semibold text-slate-400 block mb-1">Dryer Loads</span>
-          <div id="kpiDryerCycles" class="text-lg font-bold font-mono text-amber-400">0</div>
-          <span class="text-[10px] text-slate-500 mt-1 block">Dryer unit runs</span>
+        <!-- Stat Card 4: Detergent Stock -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Soap Units Used</p>
+            <h3 id="stat-detergent-units" class="text-xl sm:text-2xl font-black text-amber-400 mt-1">0</h3>
+            <p class="text-[10px] text-slate-500 mt-0.5">Detergent / Softeners</p>
+          </div>
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg">
+            <i class="fa-solid fa-jug-detergent"></i>
+          </div>
         </div>
 
       </div>
 
-      <!-- Charts Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Chart 1: Revenue vs Expense Trend -->
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl lg:col-span-2">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <i class="fa-solid fa-chart-column text-brand-400"></i>
-              <span>Revenue vs Expenses & Profit Trend</span>
-            </h3>
-          </div>
-          <div class="h-72 w-full">
-            <canvas id="financialTrendChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Chart 2: Cost Breakdown Doughnut -->
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <i class="fa-solid fa-chart-pie text-cyan-400"></i>
-              <span>Expense Cost Distribution</span>
-            </h3>
-          </div>
-          <div class="h-72 w-full flex items-center justify-center">
-            <canvas id="expenseDoughnutChart"></canvas>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Secondary Chart Row -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Machine Usage Bar Chart -->
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-rotate text-amber-400"></i>
-            <span>Machine Utilization (Washers vs Dryers)</span>
-          </h3>
-          <div class="h-64 w-full">
-            <canvas id="machineUsageChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Utility Cost Breakdown Chart -->
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-bolt text-indigo-400"></i>
-            <span>Utility Spending Trend (Electricity vs Water)</span>
-          </h3>
-          <div class="h-64 w-full">
-            <canvas id="utilityTrendChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- TAB 3: EMPLOYEE PAYROLL & TIMECARDS -->
-    <section id="tab-payroll" class="tab-content hidden space-y-6">
-      
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-users-gear text-indigo-400"></i>
-            <span>Employee Payroll & Attendance Summary</span>
-          </h2>
-          <p class="text-xs text-slate-400">Aggregated hours clocked and earnings across selected period</p>
-        </div>
-
-        <div class="flex items-center space-x-3">
-          <button onclick="exportPayrollCSV()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition flex items-center gap-2 shadow-lg shadow-indigo-600/20">
-            <i class="fa-solid fa-file-csv"></i>
-            <span>Export Payroll CSV</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Staff Summary KPI Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Total Payroll Disbursed</span>
-          <span id="payrollTotalDisbursed" class="font-mono text-xl font-bold text-indigo-400">R 0.00</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Total Staff Hours Worked</span>
-          <span id="payrollTotalHours" class="font-mono text-xl font-bold text-brand-400">0 hrs</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Active Team Members</span>
-          <span id="payrollWorkerCount" class="font-mono text-xl font-bold text-emerald-400">0 staff</span>
-        </div>
-      </div>
-
-      <!-- Employee Aggregate Table -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 bg-slate-900/50">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider">Staff Pay Period Summary</h3>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-950 text-slate-400 text-xs uppercase font-semibold">
-                <th class="py-3 px-4">Staff Member</th>
-                <th class="py-3 px-4">Shifts Worked</th>
-                <th class="py-3 px-4">Total Hours</th>
-                <th class="py-3 px-4">Avg Hourly Rate</th>
-                <th class="py-3 px-4 text-right">Total Earnings (ZAR)</th>
-              </tr>
-            </thead>
-            <tbody id="payrollTableBody" class="text-xs text-slate-300 divide-y divide-slate-800/80">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- TAB 4: TRANSPORT & DELIVERIES -->
-    <section id="tab-transport" class="tab-content hidden space-y-6">
-      
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-truck-ramp-box text-emerald-400"></i>
-            <span>George Transport & Delivery Analytics</span>
-          </h2>
-          <p class="text-xs text-slate-400">Logistics tracking for client pickups & hotel deliveries</p>
-        </div>
-      </div>
-
-      <!-- Transport KPIs -->
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Total Km Driven</span>
-          <span id="transTotalKm" class="font-mono text-xl font-bold text-emerald-400">0 km</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Total Transport Cost</span>
-          <span id="transTotalCost" class="font-mono text-xl font-bold text-rose-400">R 0.00</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Completed Trips</span>
-          <span id="transTripCount" class="font-mono text-xl font-bold text-brand-400">0 trips</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 block">Avg Rate / Km</span>
-          <span id="transAvgRate" class="font-mono text-xl font-bold text-amber-400">R 6.50</span>
-        </div>
-      </div>
-
-      <!-- Trips Detail Table -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 bg-slate-900/50">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider">Recorded Transport Routes</h3>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-950 text-slate-400 text-xs uppercase font-semibold">
-                <th class="py-3 px-4">Date</th>
-                <th class="py-3 px-4">Driver</th>
-                <th class="py-3 px-4">Route Description</th>
-                <th class="py-3 px-4">Distance (km)</th>
-                <th class="py-3 px-4">Rate / km</th>
-                <th class="py-3 px-4 text-right">Trip Cost (ZAR)</th>
-              </tr>
-            </thead>
-            <tbody id="transportTableBody" class="text-xs text-slate-300 divide-y divide-slate-800/80">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- TAB 5: OPERATIONS HISTORY & CSV EXPORT -->
-    <section id="tab-history" class="tab-content hidden space-y-6">
-      
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left text-brand-400"></i>
-            <span>Operations Log History</span>
-          </h2>
-          <p class="text-xs text-slate-400">Review past daily logs, edit entries, or export to CSV</p>
-        </div>
-
-        <div class="flex items-center space-x-3">
-          <button onclick="exportFullCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-2 shadow-lg shadow-brand-600/20">
-            <i class="fa-solid fa-download"></i>
-            <span>Export Full CSV Log</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- History Table Container -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <span class="text-xs font-bold text-white uppercase tracking-wider">All Log Entries</span>
-          <input type="text" id="historySearch" oninput="renderHistoryTable()" placeholder="Search by date..." class="bg-slate-950 border border-slate-700 text-white text-xs rounded-xl px-3 py-1.5 focus:border-brand-500 outline-none w-full sm:w-48">
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-950 text-slate-400 text-xs uppercase font-semibold">
-                <th class="py-3.5 px-4">Date</th>
-                <th class="py-3.5 px-4">Wash / Dry</th>
-                <th class="py-3.5 px-4">Gross Income</th>
-                <th class="py-3.5 px-4">Total Expenses</th>
-                <th class="py-3.5 px-4">Net Profit</th>
-                <th class="py-3.5 px-4">Margin %</th>
-                <th class="py-3.5 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="historyTableBody" class="text-xs text-slate-300 divide-y divide-slate-800/80">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- TAB 6: CLOUD & DATABASE SETTINGS -->
-    <section id="tab-settings" class="tab-content hidden space-y-6">
-      
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
-        <div>
-          <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-cloud-bolt text-brand-400"></i>
-            <span>Supabase Cloud Integration Credentials</span>
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">Pre-configured connection settings to your live Supabase project.</p>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Supabase Project URL</label>
-            <input type="text" id="cfgSupabaseUrl" readonly value="https://skodponlluoohxoubbpz.supabase.co" class="w-full bg-slate-950 border border-slate-700 text-brand-300 text-xs font-mono rounded-xl px-3 py-2.5 outline-none">
+        <!-- Left Side: Shift Entry Form -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl h-fit">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-4">
+            <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+              <i class="fa-solid fa-circle-plus text-cyan-400"></i>
+              <span>Log Shift Record</span>
+            </h2>
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-semibold px-2 py-0.5 rounded">Daily Entry</span>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Supabase Anon Public Key</label>
-            <textarea id="cfgSupabaseKey" readonly rows="3" class="w-full bg-slate-950 border border-slate-700 text-slate-300 text-xs font-mono rounded-xl p-3 outline-none">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrb2Rwb25sbHVvb2h4b3ViYnB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NTA1MzQsImV4cCI6MjEwNjUyNjUzNH0.zjBaQGs43rk-mrmLfwOqm3MEFCmlxCy7it104ZZW7X0</textarea>
-          </div>
-
-          <div class="pt-2 flex flex-wrap items-center gap-3">
-            <button onclick="testSupabaseConnection()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-2">
-              <i class="fa-solid fa-arrows-rotate"></i>
-              <span>Test Cloud Connection & Sync</span>
-            </button>
+          <form id="shift-form" onsubmit="handleShiftSubmit(event)" class="space-y-4">
             
-            <button onclick="openSqlModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center gap-2">
-              <i class="fa-solid fa-terminal"></i>
-              <span>View SQL Setup Script</span>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Date</label>
+                <input type="date" id="shift-date" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Operator Name</label>
+                <input type="text" id="shift-operator" placeholder="e.g. Sarah M." required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Washer Cycles</label>
+                <input type="number" id="shift-washers" min="0" value="0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Dryer Cycles</label>
+                <input type="number" id="shift-dryers" min="0" value="0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Detergent Soap</label>
+                <input type="number" id="shift-soap" min="0" value="0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Gross Cash (R)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2 text-xs text-slate-500">R</span>
+                  <input type="number" step="0.50" id="shift-cash" min="0" placeholder="0.00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-7 pr-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none focus:border-cyan-500">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Card / EFT (R)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2 text-xs text-slate-500">R</span>
+                  <input type="number" step="0.50" id="shift-card" min="0" placeholder="0.00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-7 pr-3 py-2 text-xs text-cyan-400 font-bold focus:outline-none focus:border-cyan-500">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Operational Notes / Remarks</label>
+              <textarea id="shift-notes" rows="2" placeholder="e.g. Machine #3 serviced, customer soap purchase..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider py-3 rounded-lg shadow-lg hover:shadow-cyan-500/20 transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Save Shift Record</span>
             </button>
+          </form>
+        </div>
+
+        <!-- Right Side: Live Shift Logs Table -->
+        <div class="lg:col-span-2 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700 mb-4">
+              <div>
+                <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+                  <i class="fa-solid fa-list-check text-emerald-400"></i>
+                  <span>Shift Records & Collections</span>
+                </h2>
+                <p class="text-xs text-slate-400">Recorded shifts stored locally & ready for cloud backup</p>
+              </div>
+
+              <!-- Table Tools -->
+              <div class="flex items-center space-x-2">
+                <input type="text" id="search-shift-input" onkeyup="filterShiftsTable()" placeholder="Search staff or notes..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 w-36 sm:w-48">
+                <button onclick="exportShiftsCSV()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-1.5 rounded-lg flex items-center space-x-1 transition">
+                  <i class="fa-solid fa-file-csv text-emerald-400"></i>
+                  <span class="hidden sm:inline">Export</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Scrollable Table -->
+            <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400 bg-slate-900/60 sticky top-0 backdrop-blur-sm">
+                    <th class="py-2.5 px-3">Date</th>
+                    <th class="py-2.5 px-3">Operator</th>
+                    <th class="py-2.5 px-3 text-center">Cycles (W/D)</th>
+                    <th class="py-2.5 px-3 text-right">Cash</th>
+                    <th class="py-2.5 px-3 text-right">Card</th>
+                    <th class="py-2.5 px-3 text-right">Total Rev</th>
+                    <th class="py-2.5 px-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="shift-logs-table-body" class="divide-y divide-slate-700/50 text-xs text-slate-300">
+                  <!-- Dynamic Rows Inserted Here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Table Summary Footer -->
+          <div class="mt-4 pt-3 border-t border-slate-700 flex justify-between items-center text-xs text-slate-400">
+            <span>Total Logged Records: <strong id="total-shift-records-count" class="text-slate-200">0</strong></span>
+            <button onclick="clearAllShifts()" class="text-red-400 hover:text-red-300 hover:underline text-[11px]">Clear All Shifts</button>
           </div>
         </div>
 
-        <!-- Connection Diagnostics Box -->
-        <div id="diagnosticsBox" class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-300 space-y-1">
-          <div class="text-slate-400 font-sans font-bold mb-2">Cloud Connection Status:</div>
-          <div id="diagMessage" class="text-amber-400">Initializing test...</div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: PAYROLL & STAFF HOURS               -->
+    <!-- ========================================== -->
+    <div id="tab-view-payroll" class="tab-view hidden space-y-6">
+      
+      <!-- Top Payroll Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Total Payroll Calculated</p>
+          <h3 id="payroll-stat-total-payout" class="text-2xl font-black text-cyan-400 mt-1">R 0.00</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Sum of all logged payouts</p>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Total Hours Logged</p>
+          <h3 id="payroll-stat-total-hours" class="text-2xl font-black text-emerald-400 mt-1">0 hrs</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Across all staff shifts</p>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Avg Hourly Rate</p>
+          <h3 id="payroll-stat-avg-rate" class="text-2xl font-black text-amber-400 mt-1">R 0.00/hr</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Weighted average staff rate</p>
         </div>
       </div>
 
-    </section>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Payroll Form -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl h-fit">
+          <div class="pb-3 border-b border-slate-700 mb-4">
+            <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+              <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i>
+              <span>Log Staff Shift Hours</span>
+            </h2>
+          </div>
+
+          <form id="payroll-form" onsubmit="handlePayrollSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Staff / Employee Name</label>
+              <input type="text" id="payroll-staff-name" placeholder="e.g. Michael K." required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Shift Date</label>
+                <input type="date" id="payroll-date" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Role / Position</label>
+                <select id="payroll-role" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+                  <option value="Machine Attendant">Machine Attendant</option>
+                  <option value="Wash & Fold Specialist">Wash & Fold Specialist</option>
+                  <option value="Shift Supervisor">Shift Supervisor</option>
+                  <option value="Cleaner / Maintenance">Cleaner / Maintenance</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Hours Worked</label>
+                <input type="number" step="0.5" id="payroll-hours" min="0.5" placeholder="8.0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Hourly Rate (R)</label>
+                <input type="number" step="1" id="payroll-rate" min="0" placeholder="45.00" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-emerald-400 font-bold focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase tracking-wider py-3 rounded-lg shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Calculate & Save Pay Record</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Payroll Table -->
+        <div class="lg:col-span-2 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-4">
+            <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+              <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i>
+              <span>Staff Wages Ledger</span>
+            </h2>
+            <button onclick="exportPayrollCSV()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-1.5 rounded-lg flex items-center space-x-1 transition">
+              <i class="fa-solid fa-file-csv text-emerald-400"></i>
+              <span>Export Payroll</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400 bg-slate-900/60 sticky top-0 backdrop-blur-sm">
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Staff Name</th>
+                  <th class="py-2.5 px-3">Role</th>
+                  <th class="py-2.5 px-3 text-center">Hours</th>
+                  <th class="py-2.5 px-3 text-right">Rate</th>
+                  <th class="py-2.5 px-3 text-right">Total Pay</th>
+                  <th class="py-2.5 px-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="payroll-table-body" class="divide-y divide-slate-700/50 text-xs text-slate-300">
+                <!-- Dynamic payroll rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: TRANSPORT & MILEAGE LOG             -->
+    <!-- ========================================== -->
+    <div id="tab-view-transport" class="tab-view hidden space-y-6">
+      
+      <!-- Top Transport Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Total Distance Driven</p>
+          <h3 id="transport-stat-total-km" class="text-2xl font-black text-cyan-400 mt-1">0 km</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Delivery & errand trips</p>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Total Fuel Expenses</p>
+          <h3 id="transport-stat-total-fuel" class="text-2xl font-black text-rose-400 mt-1">R 0.00</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Fuel receipts claimed</p>
+        </div>
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-lg">
+          <p class="text-xs text-slate-400 font-medium">Avg Fuel Cost / KM</p>
+          <h3 id="transport-stat-cost-per-km" class="text-2xl font-black text-amber-400 mt-1">R 0.00/km</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Operational vehicle efficiency</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Transport Form -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl h-fit">
+          <div class="pb-3 border-b border-slate-700 mb-4">
+            <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+              <i class="fa-solid fa-van-shuttle text-cyan-400"></i>
+              <span>Log Mileage & Fuel</span>
+            </h2>
+          </div>
+
+          <form id="transport-form" onsubmit="handleTransportSubmit(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Trip Date</label>
+                <input type="date" id="transport-date" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Driver Name</label>
+                <input type="text" id="transport-driver" placeholder="e.g. David S." required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Odometer Start (KM)</label>
+                <input type="number" id="transport-km-start" min="0" placeholder="124500" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Odometer End (KM)</label>
+                <input type="number" id="transport-km-end" min="0" placeholder="124585" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Fuel Expense (R)</label>
+                <input type="number" step="1" id="transport-fuel" min="0" placeholder="250.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-rose-400 font-bold focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Vehicle / Reg</label>
+                <input type="text" id="transport-vehicle" placeholder="Bakkie CA123" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Destination & Purpose</label>
+              <input type="text" id="transport-purpose" placeholder="Detergent pickup / Hotel linen dropoff" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-3 rounded-lg shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-route"></i>
+              <span>Save Transport Record</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Transport Table -->
+        <div class="lg:col-span-2 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-4">
+            <h2 class="font-bold text-slate-200 text-base flex items-center space-x-2">
+              <i class="fa-solid fa-list-ol text-cyan-400"></i>
+              <span>Trip & Mileage Register</span>
+            </h2>
+            <button onclick="exportTransportCSV()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-1.5 rounded-lg flex items-center space-x-1 transition">
+              <i class="fa-solid fa-file-csv text-emerald-400"></i>
+              <span>Export Trips</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400 bg-slate-900/60 sticky top-0 backdrop-blur-sm">
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Driver</th>
+                  <th class="py-2.5 px-3">Purpose</th>
+                  <th class="py-2.5 px-3 text-center">Distance</th>
+                  <th class="py-2.5 px-3 text-right">Fuel Cost</th>
+                  <th class="py-2.5 px-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transport-table-body" class="divide-y divide-slate-700/50 text-xs text-slate-300">
+                <!-- Dynamic transport rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: ANALYTICS & VISUAL REPORTS          -->
+    <!-- ========================================== -->
+    <div id="tab-view-analytics" class="tab-view hidden space-y-6">
+      
+      <div class="flex items-center justify-between bg-slate-800/60 border border-slate-700/60 rounded-xl p-4">
+        <div>
+          <h2 class="font-bold text-slate-100 text-lg">Performance Analytics</h2>
+          <p class="text-xs text-slate-400">Visual breakdowns of revenue distribution, washer vs dryer usage, and staff logs</p>
+        </div>
+        <button onclick="renderCharts()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-2 rounded-lg flex items-center space-x-2 transition">
+          <i class="fa-solid fa-arrows-rotate text-cyan-400"></i>
+          <span>Refresh Charts</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Chart 1: Revenue Trends -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl">
+          <h3 class="font-semibold text-slate-200 text-sm mb-3 flex items-center space-x-2">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i>
+            <span>Daily Revenue Trend (Cash vs Card)</span>
+          </h3>
+          <div class="h-64">
+            <canvas id="chart-revenue-trend"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Equipment Usage Breakdown -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 shadow-xl">
+          <h3 class="font-semibold text-slate-200 text-sm mb-3 flex items-center space-x-2">
+            <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+            <span>Machine Cycles Ratio (Washers vs Dryers)</span>
+          </h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="chart-equipment-pie"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
   </main>
 
-  <!-- MODAL: SQL DATABASE SETUP SCHEMA -->
-  <div id="sqlModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-database text-brand-400"></i>
-          <span>Supabase SQL Table Schema Setup</span>
-        </h3>
-        <button onclick="closeSqlModal()" class="text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+  <!-- SUPABASE CLOUD SYNC MODAL -->
+  <div id="supabase-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="toggleSupabaseModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl">
+          <i class="fa-solid fa-cloud"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-100 text-base">Supabase Cloud Sync</h3>
+          <p class="text-xs text-slate-400">Connect cloud database for multi-device sync</p>
+        </div>
       </div>
 
-      <p class="text-xs text-slate-300">
-        Run this SQL code inside your Supabase project's <strong class="text-white">SQL Editor</strong> tab to create the required <code class="text-brand-300 bg-slate-950 px-1 py-0.5 rounded">daily_logs</code> table:
+      <p class="text-xs text-slate-300 mb-4 leading-relaxed bg-slate-900/60 p-3 rounded-lg border border-slate-700/50">
+        All data is currently persisted inside your browser's local storage. To connect your PostgreSQL / Supabase project, provide your credentials below:
       </p>
 
-      <div class="relative flex-1 bg-slate-950 border border-slate-800 rounded-xl p-4 overflow-x-auto">
-        <pre id="sqlCodeText" class="text-xs font-mono text-brand-200 whitespace-pre">
-CREATE TABLE IF NOT EXISTS daily_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_code(),
-    date DATE UNIQUE NOT NULL,
-    wash_cycles INT DEFAULT 0,
-    dryer_cycles INT DEFAULT 0,
-    electricity_kwh NUMERIC DEFAULT 0,
-    electricity_rate NUMERIC DEFAULT 0,
-    water_kl NUMERIC DEFAULT 0,
-    water_rate NUMERIC DEFAULT 0,
-    direct_expenses NUMERIC DEFAULT 0,
-    daily_income NUMERIC DEFAULT 0,
-    labor_cost NUMERIC DEFAULT 0,
-    transport_expense NUMERIC DEFAULT 0,
-    total_expenses NUMERIC DEFAULT 0,
-    net_profit NUMERIC DEFAULT 0,
-    employees JSONB DEFAULT '[]'::jsonb,
-    trips JSONB DEFAULT '[]'::jsonb,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Enable Row Level Security (RLS)
-ALTER TABLE daily_logs ENABLE ROW LEVEL SECURITY;
-
--- Allow public read & write access for application operations
-CREATE POLICY "Allow public read access" ON daily_logs FOR SELECT USING (true);
-CREATE POLICY "Allow public insert and update access" ON daily_logs FOR ALL USING (true);
-        </pre>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Supabase Project URL</label>
+          <input type="text" id="supabase-url-input" placeholder="https://your-project.supabase.co" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Supabase Anon Key</label>
+          <input type="password" id="supabase-key-input" placeholder="eyJhbGciOiJIUzI1NiIsIn..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+        </div>
       </div>
 
-      <div class="flex justify-end gap-3 pt-2">
-        <button onclick="copySqlCode()" class="px-5 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-2">
-          <i class="fa-solid fa-copy"></i>
-          <span>Copy SQL to Clipboard</span>
+      <div class="mt-6 flex space-x-3">
+        <button onclick="saveSupabaseSettings()" class="flex-1 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold text-xs py-2.5 rounded-lg transition shadow">
+          Save Configuration
         </button>
-        <button onclick="closeSqlModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
-          Close
+        <button onclick="toggleSupabaseModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-4 py-2.5 rounded-lg">
+          Cancel
         </button>
       </div>
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- MANDATORY FOOTER -->
+  <footer class="mt-12 py-6 border-t border-slate-800 text-center text-xs text-slate-400">
+    <p>© 2026 Fresh Start Laundromat. All rights reserved.</p>
+    <div class="mt-2 flex items-center justify-center space-x-2">
+      <span>Designed & Developed by</span>
+      <img src="fav.png" alt="Unfiltered Ventures" class="w-4 h-4 rounded-sm inline-block align-middle">
+      <span class="font-semibold text-slate-200">Unfiltered Ventures (Pty) Ltd</span>
+    </div>
+  </footer>
+
   <script>
-    // Global Constants & Pre-filled Credentials
-    const SUPABASE_URL = "https://skodponlluoohxoubbpz.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrb2Rwb25sbHVvb2h4b3ViYnB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NTA1MzQsImV4cCI6MjEwNjUyNjUzNH0.zjBaQGs43rk-mrmLfwOqm3MEFCmlxCy7it104ZZW7X0";
+    /* ========================================================
+       APPLICATION STATE MANAGEMENT & LOCAL STORAGE SETUP
+       ======================================================== */
+    const STORAGE_KEY_SHIFTS = 'fs_shift_records_v1';
+    const STORAGE_KEY_PAYROLL = 'fs_payroll_records_v1';
+    const STORAGE_KEY_TRANSPORT = 'fs_transport_records_v1';
 
-    // Application State Variables
-    let supabaseClient = null;
-    let isCloudLive = false;
-    let dailyLogs = [];
-    let editingLogId = null;
+    // In-memory data store arrays
+    let shiftRecords = [];
+    let payrollRecords = [];
+    let transportRecords = [];
 
-    // Dynamic Form Sub-Lists
-    let activeEmployees = [];
-    let activeTrips = [];
+    // Chart instances
+    let revenueTrendChart = null;
+    let equipmentPieChart = null;
 
-    // Chart Instances
-    let financialTrendChart = null;
-    let expenseDoughnutChart = null;
-    let machineUsageChart = null;
-    let utilityTrendChart = null;
+    const defaultShiftSeed = [
+      { id: '1', date: '2026-10-01', operator: 'Sarah M.', washers: 18, dryers: 14, soap: 12, cash: 450, card: 780, total: 1230, notes: 'Morning busy, washer 2 serviced' },
+      { id: '2', date: '2026-10-02', operator: 'David S.', washers: 22, dryers: 19, soap: 15, cash: 520, card: 910, total: 1430, notes: 'Hotel duvet bulk order' },
+      { id: '3', date: '2026-10-03', operator: 'Michael K.', washers: 25, dryers: 24, soap: 18, cash: 610, card: 1100, total: 1710, notes: 'Full day capacity reached' },
+      { id: '4', date: '2026-10-04', operator: 'Sarah M.', washers: 20, dryers: 18, soap: 14, cash: 490, card: 850, total: 1340, notes: 'Normal Sunday shift' }
+    ];
 
-    window.onload = function() {
-      // Set today's date in form date picker
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('inputDate').value = today;
+    const defaultPayrollSeed = [
+      { id: '1', date: '2026-10-01', staff: 'Sarah M.', role: 'Machine Attendant', hours: 8, rate: 50, totalPay: 400 },
+      { id: '2', date: '2026-10-02', staff: 'David S.', role: 'Shift Supervisor', hours: 8.5, rate: 65, totalPay: 552.50 },
+      { id: '3', date: '2026-10-03', staff: 'Michael K.', role: 'Wash & Fold Specialist', hours: 9, rate: 55, totalPay: 495 }
+    ];
 
-      // Initialize Supabase Client
-      if (window.supabase) {
-        try {
-          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (e) {
-          console.error("Supabase initialization error:", e);
-        }
-      }
+    const defaultTransportSeed = [
+      { id: '1', date: '2026-10-01', driver: 'David S.', kmStart: 112000, kmEnd: 112045, distance: 45, fuel: 150, vehicle: 'Bakkie CA12', purpose: 'Detergent supplier pickup' },
+      { id: '2', date: '2026-10-03', driver: 'Michael K.', kmStart: 112045, kmEnd: 112110, distance: 65, fuel: 220, vehicle: 'Bakkie CA12', purpose: 'Hotel laundry drop-off' }
+    ];
 
-      // Add initial default staff and trip row to form
-      addEmployeeRow("Thandi", 8, 38);
-      addEmployeeRow("Sipho", 8, 35);
-      addTripRow("Johan", "CBD -> Wilderness Hotel", 24, 6.5);
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default input dates to today
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('shift-date').value = todayStr;
+      document.getElementById('payroll-date').value = todayStr;
+      document.getElementById('transport-date').value = todayStr;
 
-      // Perform initial connection check & load data
-      loadDataOnStart();
-    };
+      // Load data from LocalStorage
+      loadDataFromStorage();
 
-    async function loadDataOnStart() {
-      // Check local storage first as base
-      const localData = localStorage.getItem('freshstart_logs');
-      if (localData) {
-        try {
-          dailyLogs = JSON.parse(localData);
-        } catch (err) {
-          dailyLogs = [];
-        }
-      }
+      // Initial Renders
+      renderShiftLogsTable();
+      renderPayrollTable();
+      renderTransportTable();
+      updateOverviewStats();
 
-      // If no local data exists, populate rich default sample data for George
-      if (!dailyLogs || dailyLogs.length === 0) {
-        dailyLogs = getSampleLogs();
-        localStorage.setItem('freshstart_logs', JSON.stringify(dailyLogs));
-      }
+      // Pre-load saved Supabase settings
+      const savedUrl = localStorage.getItem('fs_supabase_url');
+      const savedKey = localStorage.getItem('fs_supabase_key');
+      if (savedUrl) document.getElementById('supabase-url-input').value = savedUrl;
+      if (savedKey) document.getElementById('supabase-key-input').value = savedKey;
+    });
 
-      // Attempt Supabase Fetch
-      if (supabaseClient) {
-        try {
-          const { data, error } = await supabaseClient.from('daily_logs').select('*').order('date', { ascending: false });
-          if (!error && data) {
-            isCloudLive = true;
-            if (data.length > 0) {
-              dailyLogs = data;
-              localStorage.setItem('freshstart_logs', JSON.stringify(dailyLogs));
-            }
-            updateSyncBadge(true, "Supabase Live Sync");
-            showToast("Connected to Supabase Cloud!", "success");
-          } else {
-            isCloudLive = false;
-            updateSyncBadge(false, "Local Backup Mode (SQL table pending)");
-            showToast("Using Local Storage (Run SQL setup in Supabase)", "info");
-          }
-        } catch (err) {
-          isCloudLive = false;
-          updateSyncBadge(false, "Local Storage Mode");
-        }
-      } else {
-        updateSyncBadge(false, "Local Storage Mode");
-      }
+    function loadDataFromStorage() {
+      const storedShifts = localStorage.getItem(STORAGE_KEY_SHIFTS);
+      shiftRecords = storedShifts ? JSON.parse(storedShifts) : defaultShiftSeed;
 
-      // Initial Render
-      calculateTotals();
-      renderHistoryTable();
-      updateDashboard();
-      updateDiagnostics();
+      const storedPayroll = localStorage.getItem(STORAGE_KEY_PAYROLL);
+      payrollRecords = storedPayroll ? JSON.parse(storedPayroll) : defaultPayrollSeed;
+
+      const storedTransport = localStorage.getItem(STORAGE_KEY_TRANSPORT);
+      transportRecords = storedTransport ? JSON.parse(storedTransport) : defaultTransportSeed;
+
+      // Save seeds if empty
+      if (!storedShifts) saveData(STORAGE_KEY_SHIFTS, shiftRecords);
+      if (!storedPayroll) saveData(STORAGE_KEY_PAYROLL, payrollRecords);
+      if (!storedTransport) saveData(STORAGE_KEY_TRANSPORT, transportRecords);
     }
 
-    function updateSyncBadge(isLive, text) {
-      const badge = document.getElementById('syncBadge');
-      const dot = document.getElementById('syncDot');
-      const statusText = document.getElementById('syncStatusText');
+    function saveData(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
 
-      statusText.innerText = text;
-      if (isLive) {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2 shadow-sm shadow-emerald-400";
-        badge.className = "inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 shadow-inner";
-      } else {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 mr-2 animate-pulse";
-        badge.className = "inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300 shadow-inner";
+    function switchTab(tabName) {
+      // Hide all view containers
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+
+      // Reset all tab button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap transition-all';
+      });
+
+      // Show selected tab view & highlight button
+      const activeView = document.getElementById(`tab-view-${tabName}`);
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.className = 'tab-btn bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-lg flex items-center space-x-2 whitespace-nowrap shadow-md transition-all';
+      }
+
+      // If analytics tab, render charts
+      if (tabName === 'analytics') {
+        setTimeout(renderCharts, 100);
       }
     }
 
-    function addEmployeeRow(name = '', hours = 8, rate = 38) {
-      const id = 'emp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-      activeEmployees.push({ id, name, hours, rate });
-      renderEmployeeRows();
-      calculateTotals();
-    }
-
-    function quickAddWorker(name, hours, rate) {
-      addEmployeeRow(name, hours, rate);
-      showToast(`Added ${name} to timecards`, 'info');
-    }
-
-    function removeEmployeeRow(id) {
-      activeEmployees = activeEmployees.filter(e => e.id !== id);
-      renderEmployeeRows();
-      calculateTotals();
-    }
-
-    function updateEmployee(id, field, value) {
-      const emp = activeEmployees.find(e => e.id === id);
-      if (emp) {
-        emp[field] = field === 'name' ? value : parseFloat(value) || 0;
-        calculateTotals();
-      }
-    }
-
-    function renderEmployeeRows() {
-      const container = document.getElementById('employeeList');
-      if (activeEmployees.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 italic py-2 text-center">No employees added to timecard for today.</p>`;
-        return;
-      }
-
-      container.innerHTML = activeEmployees.map(emp => `
-        <div class="flex items-center gap-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
-          <input type="text" value="${emp.name}" placeholder="Worker Name" oninput="updateEmployee('${emp.id}', 'name', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg px-2.5 py-1.5 flex-1 outline-none focus:border-brand-500">
-          <div class="flex items-center space-x-1">
-            <input type="number" step="0.5" value="${emp.hours}" oninput="updateEmployee('${emp.id}', 'hours', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-mono rounded-lg px-2 py-1.5 w-14 text-center outline-none">
-            <span class="text-[11px] text-slate-500">hrs</span>
-          </div>
-          <div class="flex items-center space-x-1">
-            <span class="text-[11px] text-slate-500">R</span>
-            <input type="number" step="1" value="${emp.rate}" oninput="updateEmployee('${emp.id}', 'rate', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-mono rounded-lg px-2 py-1.5 w-16 text-center outline-none">
-            <span class="text-[11px] text-slate-500">/h</span>
-          </div>
-          <button type="button" onclick="removeEmployeeRow('${emp.id}')" class="text-slate-500 hover:text-rose-400 p-1.5 transition">
-            <i class="fa-solid fa-trash-can text-xs"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function addTripRow(driver = 'Johan', route = '', distance = 10, rate = 6.50) {
-      const id = 'trip_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-      activeTrips.push({ id, driver, route, distance, rate });
-      renderTripRows();
-      calculateTotals();
-    }
-
-    function quickAddTrip(driver, route, distance, rate) {
-      addTripRow(driver, route, distance, rate);
-      showToast(`Added delivery trip: ${route}`, 'info');
-    }
-
-    function removeTripRow(id) {
-      activeTrips = activeTrips.filter(t => t.id !== id);
-      renderTripRows();
-      calculateTotals();
-    }
-
-    function updateTrip(id, field, value) {
-      const trip = activeTrips.find(t => t.id === id);
-      if (trip) {
-        trip[field] = (field === 'driver' || field === 'route') ? value : parseFloat(value) || 0;
-        calculateTotals();
-      }
-    }
-
-    function renderTripRows() {
-      const container = document.getElementById('tripList');
-      if (activeTrips.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 italic py-2 text-center">No transport trips logged for today.</p>`;
-        return;
-      }
-
-      container.innerHTML = activeTrips.map(trip => `
-        <div class="flex flex-col gap-1.5 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-          <div class="flex items-center gap-2">
-            <input type="text" value="${trip.driver}" placeholder="Driver" oninput="updateTrip('${trip.id}', 'driver', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg px-2.5 py-1 w-28 outline-none">
-            <input type="text" value="${trip.route}" placeholder="Route (e.g. Shop -> Wilderness)" oninput="updateTrip('${trip.id}', 'route', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg px-2.5 py-1 flex-1 outline-none">
-            <button type="button" onclick="removeTripRow('${trip.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition">
-              <i class="fa-solid fa-trash-can text-xs"></i>
-            </button>
-          </div>
-          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
-            <div class="flex items-center space-x-2">
-              <span>Dist:</span>
-              <input type="number" value="${trip.distance}" oninput="updateTrip('${trip.id}', 'distance', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-mono rounded-lg px-2 py-0.5 w-16 text-center outline-none">
-              <span>km</span>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span>Rate: R</span>
-              <input type="number" step="0.5" value="${trip.rate}" oninput="updateTrip('${trip.id}', 'rate', this.value)" class="bg-slate-900 border border-slate-700 text-white text-xs font-mono rounded-lg px-2 py-0.5 w-16 text-center outline-none">
-              <span>/km</span>
-            </div>
-            <span class="font-mono text-emerald-400 font-bold">R ${(trip.distance * trip.rate).toFixed(2)}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function calculateTotals() {
-      const gross = parseFloat(document.getElementById('inputGrossIncome').value) || 0;
-      const elecKwh = parseFloat(document.getElementById('inputElectricityKwh').value) || 0;
-      const elecRate = parseFloat(document.getElementById('rateElectricity').value) || 3.20;
-      const waterKl = parseFloat(document.getElementById('inputWaterKl').value) || 0;
-      const waterRate = parseFloat(document.getElementById('rateWater').value) || 35.00;
-      const directExp = parseFloat(document.getElementById('inputDirectExpenses').value) || 0;
-
-      // Electricity & Water Costs
-      const elecCost = elecKwh * elecRate;
-      const waterCost = waterKl * waterRate;
-
-      // Labor Cost
-      const laborCost = activeEmployees.reduce((sum, e) => sum + ((e.hours || 0) * (e.rate || 0)), 0);
-
-      // Transport Cost
-      const transportCost = activeTrips.reduce((sum, t) => sum + ((t.distance || 0) * (t.rate || 0)), 0);
-
-      // Other Direct Expenses Sum
-      const totalExpenses = elecCost + waterCost + laborCost + transportCost + directExp;
-      const netProfit = gross - totalExpenses;
-      const marginPct = gross > 0 ? (netProfit / gross) * 100 : 0;
-
-      // Update Form Display Badges
-      document.getElementById('displayLaborCost').innerText = `R ${laborCost.toFixed(2)}`;
-      document.getElementById('displayTransportCost').innerText = `R ${transportCost.toFixed(2)}`;
-
-      // Update Calculated Summary Bar
-      document.getElementById('calcGross').innerText = `R ${gross.toFixed(2)}`;
-      document.getElementById('calcElectricity').innerText = `R ${elecCost.toFixed(2)}`;
-      document.getElementById('calcWater').innerText = `R ${waterCost.toFixed(2)}`;
-      document.getElementById('calcLabor').innerText = `R ${laborCost.toFixed(2)}`;
-      document.getElementById('calcOther').innerText = `R ${(transportCost + directExp).toFixed(2)}`;
-      document.getElementById('calcTotalExpenses').innerText = `R ${totalExpenses.toFixed(2)}`;
-
-      const profitEl = document.getElementById('calcNetProfit');
-      profitEl.innerText = `R ${netProfit.toFixed(2)}`;
-      if (netProfit < 0) {
-        profitEl.className = "font-mono text-lg font-black text-rose-400";
-      } else {
-        profitEl.className = "font-mono text-lg font-black text-emerald-400";
-      }
-
-      document.getElementById('calcMargin').innerText = `${marginPct.toFixed(1)}% margin`;
-    }
-
-    async function handleFormSubmit(e) {
+    function handleShiftSubmit(e) {
       e.preventDefault();
 
-      const dateVal = document.getElementById('inputDate').value;
-      const washVal = parseInt(document.getElementById('inputWashCycles').value) || 0;
-      const dryerVal = parseInt(document.getElementById('inputDryerCycles').value) || 0;
-      const elecKwh = parseFloat(document.getElementById('inputElectricityKwh').value) || 0;
-      const elecRate = parseFloat(document.getElementById('rateElectricity').value) || 3.20;
-      const waterKl = parseFloat(document.getElementById('inputWaterKl').value) || 0;
-      const waterRate = parseFloat(document.getElementById('rateWater').value) || 35.00;
-      const directExp = parseFloat(document.getElementById('inputDirectExpenses').value) || 0;
-      const grossIncome = parseFloat(document.getElementById('inputGrossIncome').value) || 0;
+      const date = document.getElementById('shift-date').value;
+      const operator = document.getElementById('shift-operator').value.trim();
+      const washers = parseInt(document.getElementById('shift-washers').value) || 0;
+      const dryers = parseInt(document.getElementById('shift-dryers').value) || 0;
+      const soap = parseInt(document.getElementById('shift-soap').value) || 0;
+      const cash = parseFloat(document.getElementById('shift-cash').value) || 0;
+      const card = parseFloat(document.getElementById('shift-card').value) || 0;
+      const notes = document.getElementById('shift-notes').value.trim();
+      const total = cash + card;
 
-      const laborCost = activeEmployees.reduce((sum, emp) => sum + (emp.hours * emp.rate), 0);
-      const transportCost = activeTrips.reduce((sum, tr) => sum + (tr.distance * tr.rate), 0);
-      const totalExpenses = (elecKwh * elecRate) + (waterKl * waterRate) + laborCost + transportCost + directExp;
-      const netProfit = grossIncome - totalExpenses;
-
-      const logPayload = {
-        id: editingLogId || ('log_' + Date.now()),
-        date: dateVal,
-        wash_cycles: washVal,
-        dryer_cycles: dryerVal,
-        electricity_kwh: elecKwh,
-        electricity_rate: elecRate,
-        water_kl: waterKl,
-        water_rate: waterRate,
-        direct_expenses: directExp,
-        daily_income: grossIncome,
-        labor_cost: laborCost,
-        transport_expense: transportCost,
-        total_expenses: totalExpenses,
-        net_profit: netProfit,
-        employees: activeEmployees,
-        trips: activeTrips,
-        created_at: new Date().toISOString()
+      const newRecord = {
+        id: Date.now().toString(),
+        date,
+        operator,
+        washers,
+        dryers,
+        soap,
+        cash,
+        card,
+        total,
+        notes
       };
 
-      // 1. Update local array & localStorage
-      const existingIdx = dailyLogs.findIndex(l => l.date === dateVal || l.id === logPayload.id);
-      if (existingIdx >= 0) {
-        dailyLogs[existingIdx] = logPayload;
-      } else {
-        dailyLogs.unshift(logPayload);
-      }
-      
-      // Sort array descending by date
-      dailyLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
-      localStorage.setItem('freshstart_logs', JSON.stringify(dailyLogs));
+      shiftRecords.unshift(newRecord);
+      saveData(STORAGE_KEY_SHIFTS, shiftRecords);
 
-      // 2. Attempt Supabase Upsert
-      if (supabaseClient) {
-        try {
-          const { error } = await supabaseClient.from('daily_logs').upsert(logPayload, { onConflict: 'date' });
-          if (!error) {
-            showToast("Saved & Synced with Supabase Cloud!", "success");
-            updateSyncBadge(true, "Supabase Live Sync");
-          } else {
-            console.warn("Supabase upsert note:", error.message);
-            showToast("Saved to Local Storage (Supabase pending setup)", "info");
-          }
-        } catch (err) {
-          showToast("Saved locally", "info");
-        }
-      } else {
-        showToast("Saved locally to browser", "success");
-      }
+      // Reset form fields
+      document.getElementById('shift-operator').value = '';
+      document.getElementById('shift-washers').value = '0';
+      document.getElementById('shift-dryers').value = '0';
+      document.getElementById('shift-soap').value = '0';
+      document.getElementById('shift-cash').value = '';
+      document.getElementById('shift-card').value = '';
+      document.getElementById('shift-notes').value = '';
 
-      // Reset Form Mode
-      editingLogId = null;
-      document.getElementById('formTitle').innerText = "Record Daily Operations Log";
-      document.getElementById('saveBtnText').innerText = "Save Daily Log Entry";
-
-      // Refresh Views
-      renderHistoryTable();
-      updateDashboard();
+      renderShiftLogsTable();
+      updateOverviewStats();
+      showToast('Shift record saved successfully!', 'success');
     }
 
-    function resetForm() {
-      editingLogId = null;
-      document.getElementById('dailyLogForm').reset();
-      document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('rateElectricity').value = "3.20";
-      document.getElementById('rateWater').value = "35.00";
-      activeEmployees = [];
-      activeTrips = [];
-      addEmployeeRow("Thandi", 8, 38);
-      addEmployeeRow("Sipho", 8, 35);
-      addTripRow("Johan", "CBD -> Wilderness Hotel", 24, 6.5);
-      calculateTotals();
-      document.getElementById('formTitle').innerText = "Record Daily Operations Log";
-      document.getElementById('saveBtnText').innerText = "Save Daily Log Entry";
-      showToast("Form reset to default", "info");
-    }
+    function renderShiftLogsTable() {
+      const tbody = document.getElementById('shift-logs-table-body');
+      tbody.innerHTML = '';
 
-    function editLog(id) {
-      const log = dailyLogs.find(l => l.id === id);
-      if (!log) return;
-
-      editingLogId = log.id;
-      document.getElementById('formTitle').innerText = `Edit Entry for ${log.date}`;
-      document.getElementById('saveBtnText').innerText = "Update Daily Log";
-
-      document.getElementById('inputDate').value = log.date;
-      document.getElementById('inputWashCycles').value = log.wash_cycles || 0;
-      document.getElementById('inputDryerCycles').value = log.dryer_cycles || 0;
-      document.getElementById('inputElectricityKwh').value = log.electricity_kwh || 0;
-      document.getElementById('rateElectricity').value = log.electricity_rate || 3.20;
-      document.getElementById('inputWaterKl').value = log.water_kl || 0;
-      document.getElementById('rateWater').value = log.water_rate || 35.00;
-      document.getElementById('inputDirectExpenses').value = log.direct_expenses || 0;
-      document.getElementById('inputGrossIncome').value = log.daily_income || 0;
-
-      activeEmployees = (log.employees && Array.isArray(log.employees)) ? JSON.parse(JSON.stringify(log.employees)) : [];
-      activeTrips = (log.trips && Array.isArray(log.trips)) ? JSON.parse(JSON.stringify(log.trips)) : [];
-
-      renderEmployeeRows();
-      renderTripRows();
-      calculateTotals();
-
-      switchTab('tab-entry');
-      showToast(`Editing log for ${log.date}`, "info");
-    }
-
-    async function deleteLog(id) {
-      const log = dailyLogs.find(l => l.id === id);
-      if (!log) return;
-
-      dailyLogs = dailyLogs.filter(l => l.id !== id);
-      localStorage.setItem('freshstart_logs', JSON.stringify(dailyLogs));
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('daily_logs').delete().eq('id', id);
-        } catch (err) {
-          console.error("Cloud delete warning:", err);
-        }
-      }
-
-      renderHistoryTable();
-      updateDashboard();
-      showToast(`Deleted log for ${log.date}`, "info");
-    }
-
-    function renderHistoryTable() {
-      const tbody = document.getElementById('historyTableBody');
-      const search = (document.getElementById('historySearch')?.value || '').toLowerCase();
-
-      const filtered = dailyLogs.filter(l => l.date.includes(search));
-
-      if (filtered.length === 0) {
+      if (shiftRecords.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="7" class="py-8 text-center text-slate-500">
-              No daily logs found. Enter a log above or seed demo data.
+              <i class="fa-solid fa-inbox text-2xl mb-2 block"></i>
+              No shift records logged yet.
             </td>
-          </tr>
-        `;
+          </tr>`;
+        document.getElementById('total-shift-records-count').innerText = '0';
         return;
       }
 
-      tbody.innerHTML = filtered.map(log => {
-        const margin = log.daily_income > 0 ? ((log.net_profit / log.daily_income) * 100).toFixed(1) : '0.0';
-        const isProfitable = log.net_profit >= 0;
-
-        return `
-          <tr class="hover:bg-slate-800/50 transition">
-            <td class="py-3 px-4 font-semibold text-white font-mono">${log.date}</td>
-            <td class="py-3 px-4">
-              <span class="text-brand-300 font-mono">${log.wash_cycles || 0}</span> W / 
-              <span class="text-amber-300 font-mono">${log.dryer_cycles || 0}</span> D
-            </td>
-            <td class="py-3 px-4 font-mono font-bold text-emerald-400">R ${(log.daily_income || 0).toFixed(2)}</td>
-            <td class="py-3 px-4 font-mono text-rose-400">R ${(log.total_expenses || 0).toFixed(2)}</td>
-            <td class="py-3 px-4 font-mono font-bold ${isProfitable ? 'text-emerald-400' : 'text-rose-400'}">
-              R ${(log.net_profit || 0).toFixed(2)}
-            </td>
-            <td class="py-3 px-4">
-              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold ${isProfitable ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-rose-950 text-rose-300 border border-rose-800'}">
-                ${margin}%
-              </span>
-            </td>
-            <td class="py-3 px-4 text-center space-x-2">
-              <button onclick="editLog('${log.id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-brand-300 rounded-lg transition" title="Edit Log">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </button>
-              <button onclick="deleteLog('${log.id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-rose-900/60 text-rose-400 rounded-lg transition" title="Delete Log">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </td>
-          </tr>
+      shiftRecords.forEach(rec => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-700/30 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-medium text-slate-300 whitespace-nowrap">${rec.date}</td>
+          <td class="py-3 px-3 font-semibold text-slate-200">${rec.operator}</td>
+          <td class="py-3 px-3 text-center">
+            <span class="bg-cyan-500/10 text-cyan-400 px-1.5 py-0.5 rounded font-mono text-[11px]">${rec.washers}W</span>
+            <span class="bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded font-mono text-[11px] ml-1">${rec.dryers}D</span>
+          </td>
+          <td class="py-3 px-3 text-right font-mono text-emerald-400">R ${rec.cash.toFixed(2)}</td>
+          <td class="py-3 px-3 text-right font-mono text-cyan-400">R ${rec.card.toFixed(2)}</td>
+          <td class="py-3 px-3 text-right font-mono font-bold text-slate-100">R ${rec.total.toFixed(2)}</td>
+          <td class="py-3 px-3 text-center">
+            <button onclick="deleteShiftRecord('${rec.id}')" class="text-slate-500 hover:text-red-400 transition p-1" title="Delete record">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
         `;
-      }).join('');
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('total-shift-records-count').innerText = shiftRecords.length.toString();
     }
 
-    function renderPayrollSummary() {
-      const workerMap = {};
-      let totalDisbursed = 0;
-      let totalHours = 0;
+    function deleteShiftRecord(id) {
+      shiftRecords = shiftRecords.filter(r => r.id !== id);
+      saveData(STORAGE_KEY_SHIFTS, shiftRecords);
+      renderShiftLogsTable();
+      updateOverviewStats();
+      showToast('Record deleted.', 'info');
+    }
 
-      dailyLogs.forEach(log => {
-        if (log.employees && Array.isArray(log.employees)) {
-          log.employees.forEach(emp => {
-            if (!emp.name) return;
-            const key = emp.name.trim();
-            if (!workerMap[key]) {
-              workerMap[key] = { shifts: 0, hours: 0, earnings: 0, rates: [] };
-            }
-            const hours = parseFloat(emp.hours) || 0;
-            const rate = parseFloat(emp.rate) || 0;
-            const earned = hours * rate;
+    function clearAllShifts() {
+      if (shiftRecords.length === 0) return;
+      shiftRecords = [];
+      saveData(STORAGE_KEY_SHIFTS, shiftRecords);
+      renderShiftLogsTable();
+      updateOverviewStats();
+      showToast('All shift logs cleared.', 'info');
+    }
 
-            workerMap[key].shifts += 1;
-            workerMap[key].hours += hours;
-            workerMap[key].earnings += earned;
-            workerMap[key].rates.push(rate);
-
-            totalDisbursed += earned;
-            totalHours += hours;
-          });
-        }
+    function filterShiftsTable() {
+      const query = document.getElementById('search-shift-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#shift-logs-table-body tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
       });
+    }
 
-      const workerList = Object.keys(workerMap).map(name => {
-        const item = workerMap[name];
-        const avgRate = item.rates.length > 0 ? (item.rates.reduce((a,b)=>a+b,0) / item.rates.length) : 0;
-        return { name, ...item, avgRate };
-      });
+    function updateOverviewStats() {
+      let totalRev = 0;
+      let totalCycles = 0;
+      let washerCount = 0;
+      let dryerCount = 0;
+      let soapUnits = 0;
+      let activeOperator = 'None';
 
-      document.getElementById('payrollTotalDisbursed').innerText = `R ${totalDisbursed.toFixed(2)}`;
-      document.getElementById('payrollTotalHours').innerText = `${totalHours.toFixed(1)} hrs`;
-      document.getElementById('payrollWorkerCount').innerText = `${workerList.length} staff`;
-
-      const tbody = document.getElementById('payrollTableBody');
-      if (workerList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500">No employee timecard records logged yet.</td></tr>`;
-        return;
+      if (shiftRecords.length > 0) {
+        activeOperator = shiftRecords[0].operator;
+        shiftRecords.forEach(r => {
+          totalRev += r.total;
+          washerCount += r.washers;
+          dryerCount += r.dryers;
+          soapUnits += r.soap;
+        });
+        totalCycles = washerCount + dryerCount;
       }
 
-      tbody.innerHTML = workerList.map(w => `
-        <tr class="hover:bg-slate-800/40">
-          <td class="py-3 px-4 font-bold text-white">${w.name}</td>
-          <td class="py-3 px-4 font-mono">${w.shifts} shifts</td>
-          <td class="py-3 px-4 font-mono text-brand-300 font-semibold">${w.hours.toFixed(1)} hrs</td>
-          <td class="py-3 px-4 font-mono text-slate-400">R ${w.avgRate.toFixed(2)}/h</td>
-          <td class="py-3 px-4 text-right font-mono font-bold text-indigo-400">R ${w.earnings.toFixed(2)}</td>
-        </tr>
-      `).join('');
+      document.getElementById('stat-daily-revenue').innerText = `R ${totalRev.toFixed(2)}`;
+      document.getElementById('stat-daily-cycles').innerText = totalCycles.toString();
+      document.getElementById('stat-washer-count').innerText = washerCount.toString();
+      document.getElementById('stat-dryer-count').innerText = dryerCount.toString();
+      document.getElementById('stat-active-operator').innerText = activeOperator;
+      document.getElementById('header-active-operator').innerText = activeOperator;
+      document.getElementById('stat-detergent-units').innerText = soapUnits.toString();
     }
 
-    function renderTransportSummary() {
+    function handlePayrollSubmit(e) {
+      e.preventDefault();
+
+      const staff = document.getElementById('payroll-staff-name').value.trim();
+      const date = document.getElementById('payroll-date').value;
+      const role = document.getElementById('payroll-role').value;
+      const hours = parseFloat(document.getElementById('payroll-hours').value) || 0;
+      const rate = parseFloat(document.getElementById('payroll-rate').value) || 0;
+      const totalPay = hours * rate;
+
+      const newPayroll = {
+        id: Date.now().toString(),
+        staff,
+        date,
+        role,
+        hours,
+        rate,
+        totalPay
+      };
+
+      payrollRecords.unshift(newPayroll);
+      saveData(STORAGE_KEY_PAYROLL, payrollRecords);
+
+      document.getElementById('payroll-staff-name').value = '';
+      document.getElementById('payroll-hours').value = '';
+      document.getElementById('payroll-rate').value = '';
+
+      renderPayrollTable();
+      showToast('Payroll record added!', 'success');
+    }
+
+    function renderPayrollTable() {
+      const tbody = document.getElementById('payroll-table-body');
+      tbody.innerHTML = '';
+
+      let grandTotalPay = 0;
+      let grandTotalHours = 0;
+
+      if (payrollRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500">No payroll entries logged.</td></tr>`;
+      } else {
+        payrollRecords.forEach(p => {
+          grandTotalPay += p.totalPay;
+          grandTotalHours += p.hours;
+
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-700/30 transition';
+          tr.innerHTML = `
+            <td class="py-3 px-3 whitespace-nowrap text-slate-400">${p.date}</td>
+            <td class="py-3 px-3 font-semibold text-slate-200">${p.staff}</td>
+            <td class="py-3 px-3 text-slate-400 text-[11px]">${p.role}</td>
+            <td class="py-3 px-3 text-center font-mono">${p.hours} hrs</td>
+            <td class="py-3 px-3 text-right font-mono text-slate-400">R ${p.rate.toFixed(2)}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold text-emerald-400">R ${p.totalPay.toFixed(2)}</td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="deletePayrollRecord('${p.id}')" class="text-slate-500 hover:text-red-400 transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      const avgRate = grandTotalHours > 0 ? (grandTotalPay / grandTotalHours) : 0;
+      document.getElementById('payroll-stat-total-payout').innerText = `R ${grandTotalPay.toFixed(2)}`;
+      document.getElementById('payroll-stat-total-hours').innerText = `${grandTotalHours.toFixed(1)} hrs`;
+      document.getElementById('payroll-stat-avg-rate').innerText = `R ${avgRate.toFixed(2)}/hr`;
+    }
+
+    function deletePayrollRecord(id) {
+      payrollRecords = payrollRecords.filter(p => p.id !== id);
+      saveData(STORAGE_KEY_PAYROLL, payrollRecords);
+      renderPayrollTable();
+      showToast('Payroll record removed.', 'info');
+    }
+
+    function handleTransportSubmit(e) {
+      e.preventDefault();
+
+      const date = document.getElementById('transport-date').value;
+      const driver = document.getElementById('transport-driver').value.trim();
+      const kmStart = parseInt(document.getElementById('transport-km-start').value) || 0;
+      const kmEnd = parseInt(document.getElementById('transport-km-end').value) || 0;
+      const fuel = parseFloat(document.getElementById('transport-fuel').value) || 0;
+      const vehicle = document.getElementById('transport-vehicle').value.trim() || 'General Vehicle';
+      const purpose = document.getElementById('transport-purpose').value.trim();
+
+      const distance = kmEnd > kmStart ? (kmEnd - kmStart) : 0;
+
+      const newTrip = {
+        id: Date.now().toString(),
+        date,
+        driver,
+        kmStart,
+        kmEnd,
+        distance,
+        fuel,
+        vehicle,
+        purpose
+      };
+
+      transportRecords.unshift(newTrip);
+      saveData(STORAGE_KEY_TRANSPORT, transportRecords);
+
+      document.getElementById('transport-driver').value = '';
+      document.getElementById('transport-km-start').value = '';
+      document.getElementById('transport-km-end').value = '';
+      document.getElementById('transport-fuel').value = '';
+      document.getElementById('transport-purpose').value = '';
+
+      renderTransportTable();
+      showToast('Trip mileage logged!', 'success');
+    }
+
+    function renderTransportTable() {
+      const tbody = document.getElementById('transport-table-body');
+      tbody.innerHTML = '';
+
       let totalKm = 0;
-      let totalCost = 0;
-      let tripCount = 0;
-      const tripList = [];
+      let totalFuel = 0;
 
-      dailyLogs.forEach(log => {
-        if (log.trips && Array.isArray(log.trips)) {
-          log.trips.forEach(tr => {
-            const dist = parseFloat(tr.distance) || 0;
-            const rate = parseFloat(tr.rate) || 6.50;
-            const cost = dist * rate;
+      if (transportRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">No transport trips logged.</td></tr>`;
+      } else {
+        transportRecords.forEach(t => {
+          totalKm += t.distance;
+          totalFuel += t.fuel;
 
-            totalKm += dist;
-            totalCost += cost;
-            tripCount += 1;
-
-            tripList.push({
-              date: log.date,
-              driver: tr.driver || 'Driver',
-              route: tr.route || 'Delivery Route',
-              distance: dist,
-              rate: rate,
-              cost: cost
-            });
-          });
-        }
-      });
-
-      document.getElementById('transTotalKm').innerText = `${totalKm.toFixed(0)} km`;
-      document.getElementById('transTotalCost').innerText = `R ${totalCost.toFixed(2)}`;
-      document.getElementById('transTripCount').innerText = `${tripCount} trips`;
-      document.getElementById('transAvgRate').innerText = `R 6.50 /km`;
-
-      const tbody = document.getElementById('transportTableBody');
-      if (tripList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">No transport trips logged yet.</td></tr>`;
-        return;
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-700/30 transition';
+          tr.innerHTML = `
+            <td class="py-3 px-3 whitespace-nowrap text-slate-400">${t.date}</td>
+            <td class="py-3 px-3 font-semibold text-slate-200">${t.driver}</td>
+            <td class="py-3 px-3 text-slate-300">${t.purpose}</td>
+            <td class="py-3 px-3 text-center font-mono text-cyan-400 font-bold">${t.distance} km</td>
+            <td class="py-3 px-3 text-right font-mono text-rose-400">R ${t.fuel.toFixed(2)}</td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="deleteTransportRecord('${t.id}')" class="text-slate-500 hover:text-red-400 transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
       }
 
-      tbody.innerHTML = tripList.map(t => `
-        <tr class="hover:bg-slate-800/40">
-          <td class="py-3 px-4 font-mono text-slate-300">${t.date}</td>
-          <td class="py-3 px-4 font-semibold text-white">${t.driver}</td>
-          <td class="py-3 px-4 text-slate-300">${t.route}</td>
-          <td class="py-3 px-4 font-mono text-emerald-300 font-semibold">${t.distance} km</td>
-          <td class="py-3 px-4 font-mono text-slate-400">R ${t.rate.toFixed(2)}</td>
-          <td class="py-3 px-4 text-right font-mono font-bold text-emerald-400">R ${t.cost.toFixed(2)}</td>
-        </tr>
-      `).join('');
+      const costPerKm = totalKm > 0 ? (totalFuel / totalKm) : 0;
+      document.getElementById('transport-stat-total-km').innerText = `${totalKm} km`;
+      document.getElementById('transport-stat-total-fuel').innerText = `R ${totalFuel.toFixed(2)}`;
+      document.getElementById('transport-stat-cost-per-km').innerText = `R ${costPerKm.toFixed(2)}/km`;
     }
 
-    function updateDashboard() {
-      const range = document.getElementById('dashboardRange')?.value || 'all';
-      let filtered = [...dailyLogs];
+    function deleteTransportRecord(id) {
+      transportRecords = transportRecords.filter(t => t.id !== id);
+      saveData(STORAGE_KEY_TRANSPORT, transportRecords);
+      renderTransportTable();
+      showToast('Trip record removed.', 'info');
+    }
 
-      const now = new Date();
-      if (range === '7') {
-        const cut = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(l => new Date(l.date) >= cut);
-      } else if (range === '30') {
-        const cut = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(l => new Date(l.date) >= cut);
-      } else if (range === 'thisMonth') {
-        const monthStr = now.toISOString().substr(0, 7);
-        filtered = filtered.filter(l => l.date.startsWith(monthStr));
-      }
+    function renderCharts() {
+      // Sort records chronologically
+      const sortedShifts = [...shiftRecords].reverse();
+      const dates = sortedShifts.map(s => s.date);
+      const cashData = sortedShifts.map(s => s.cash);
+      const cardData = sortedShifts.map(s => s.card);
 
-      // Compute aggregates
-      let totRev = 0, totExp = 0, totNet = 0;
-      let totWash = 0, totDryer = 0;
-      let totElecCost = 0, totWaterCost = 0, totLaborCost = 0, totTransCost = 0, totDirectCost = 0;
-
-      filtered.forEach(log => {
-        totRev += log.daily_income || 0;
-        totExp += log.total_expenses || 0;
-        totNet += log.net_profit || 0;
-        totWash += log.wash_cycles || 0;
-        totDryer += log.dryer_cycles || 0;
-
-        const eCost = (log.electricity_kwh || 0) * (log.electricity_rate || 3.20);
-        const wCost = (log.water_kl || 0) * (log.water_rate || 35.00);
-
-        totElecCost += eCost;
-        totWaterCost += wCost;
-        totLaborCost += log.labor_cost || 0;
-        totTransCost += log.transport_expense || 0;
-        totDirectCost += log.direct_expenses || 0;
+      let totalWashers = 0;
+      let totalDryers = 0;
+      shiftRecords.forEach(s => {
+        totalWashers += s.washers;
+        totalDryers += s.dryers;
       });
 
-      const avgProfit = filtered.length > 0 ? (totNet / filtered.length) : 0;
-      const marginPct = totRev > 0 ? (totNet / totRev) * 100 : 0;
+      // Chart 1: Revenue Line Chart
+      const ctxTrend = document.getElementById('chart-revenue-trend').getContext('2d');
+      if (revenueTrendChart) revenueTrendChart.destroy();
 
-      // Update KPI Cards
-      document.getElementById('kpiRevenue').innerText = `R ${totRev.toFixed(2)}`;
-      document.getElementById('kpiExpenses').innerText = `R ${totExp.toFixed(2)}`;
-      document.getElementById('kpiNetProfit').innerText = `R ${totNet.toFixed(2)}`;
-      document.getElementById('kpiProfitMargin').innerText = `${marginPct.toFixed(1)}% margin`;
-      document.getElementById('kpiAvgProfit').innerText = `R ${avgProfit.toFixed(2)}`;
-      document.getElementById('kpiWashCycles').innerText = totWash;
-      document.getElementById('kpiDryerCycles').innerText = totDryer;
-
-      // Also render secondary sub-views
-      renderPayrollSummary();
-      renderTransportSummary();
-
-      // Chart Data Generation (chronological ascending order)
-      const chronoLogs = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
-      const labels = chronoLogs.map(l => l.date);
-
-      // 1. Financial Trend Chart
-      const revData = chronoLogs.map(l => l.daily_income || 0);
-      const expData = chronoLogs.map(l => l.total_expenses || 0);
-      const netData = chronoLogs.map(l => l.net_profit || 0);
-
-      renderFinancialTrendChart(labels, revData, expData, netData);
-
-      // 2. Expense Breakdown Doughnut
-      renderExpenseDoughnutChart([totLaborCost, totElecCost, totWaterCost, totTransCost, totDirectCost]);
-
-      // 3. Machine Usage Chart
-      const washData = chronoLogs.map(l => l.wash_cycles || 0);
-      const dryerData = chronoLogs.map(l => l.dryer_cycles || 0);
-      renderMachineUsageChart(labels, washData, dryerData);
-
-      // 4. Utility Trend Chart
-      const elecCostSeries = chronoLogs.map(l => (l.electricity_kwh || 0) * (l.electricity_rate || 3.20));
-      const waterCostSeries = chronoLogs.map(l => (l.water_kl || 0) * (l.water_rate || 35.00));
-      renderUtilityTrendChart(labels, elecCostSeries, waterCostSeries);
-    }
-
-    function renderFinancialTrendChart(labels, revData, expData, netData) {
-      const ctx = document.getElementById('financialTrendChart').getContext('2d');
-      if (financialTrendChart) financialTrendChart.destroy();
-
-      financialTrendChart = new Chart(ctx, {
-        type: 'bar',
+      revenueTrendChart = new Chart(ctxTrend, {
+        type: 'line',
         data: {
-          labels,
+          labels: dates.length > 0 ? dates : ['No Data'],
           datasets: [
-            { label: 'Revenue (ZAR)', data: revData, backgroundColor: 'rgba(52, 211, 153, 0.7)', borderRadius: 6 },
-            { label: 'Expenses (ZAR)', data: expData, backgroundColor: 'rgba(251, 113, 133, 0.7)', borderRadius: 6 },
-            { label: 'Net Profit (ZAR)', data: netData, type: 'line', borderColor: '#06b6d4', borderWidth: 3, tension: 0.3, fill: false, pointBackgroundColor: '#06b6d4' }
+            {
+              label: 'Cash Revenue (R)',
+              data: cashData,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Card/EFT Revenue (R)',
+              data: cardData,
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.1)',
+              tension: 0.3,
+              fill: true
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+            legend: { labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 } } }
           },
           scales: {
-            x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
-            y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(51, 65, 85, 0.3)' } }
+            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
+            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } }
           }
         }
       });
-    }
 
-    function renderExpenseDoughnutChart(costsArray) {
-      const ctx = document.getElementById('expenseDoughnutChart').getContext('2d');
-      if (expenseDoughnutChart) expenseDoughnutChart.destroy();
+      // Chart 2: Equipment Pie Chart
+      const ctxPie = document.getElementById('chart-equipment-pie').getContext('2d');
+      if (equipmentPieChart) equipmentPieChart.destroy();
 
-      expenseDoughnutChart = new Chart(ctx, {
+      equipmentPieChart = new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-          labels: ['Labor (Staff)', 'Electricity', 'Water', 'Transport', 'Supplies'],
+          labels: ['Washing Machines', 'Dryers'],
           datasets: [{
-            data: costsArray,
-            backgroundColor: ['#818cf8', '#fbbf24', '#22d3ee', '#34d399', '#f43f5e'],
+            data: [totalWashers || 1, totalDryers || 1],
+            backgroundColor: ['#06b6d4', '#6366f1'],
             borderWidth: 2,
-            borderColor: '#0f172a'
+            borderColor: '#131e36'
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
+            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Inter', size: 12 } } }
           }
         }
       });
     }
 
-    function renderMachineUsageChart(labels, washData, dryerData) {
-      const ctx = document.getElementById('machineUsageChart').getContext('2d');
-      if (machineUsageChart) machineUsageChart.destroy();
-
-      machineUsageChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Wash Cycles', data: washData, borderColor: '#06b6d4', backgroundColor: 'rgba(6, 182, 212, 0.1)', fill: true, tension: 0.3 },
-            { label: 'Dryer Cycles', data: dryerData, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
-          scales: {
-            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.2)' } },
-            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.2)' } }
-          }
-        }
+    function exportShiftsCSV() {
+      if (shiftRecords.length === 0) return showToast('No data to export', 'error');
+      let csv = 'ID,Date,Operator,WasherCycles,DryerCycles,SoapUnits,CashR,CardR,TotalR,Notes\n';
+      shiftRecords.forEach(r => {
+        csv += `"${r.id}","${r.date}","${r.operator}",${r.washers},${r.dryers},${r.soap},${r.cash},${r.card},${r.total},"${r.notes}"\n`;
       });
-    }
-
-    function renderUtilityTrendChart(labels, elecSeries, waterSeries) {
-      const ctx = document.getElementById('utilityTrendChart').getContext('2d');
-      if (utilityTrendChart) utilityTrendChart.destroy();
-
-      utilityTrendChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Electricity Cost (R)', data: elecSeries, backgroundColor: '#f59e0b', borderRadius: 4 },
-            { label: 'Water Cost (R)', data: waterSeries, backgroundColor: '#06b6d4', borderRadius: 4 }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
-          scales: {
-            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.2)' } },
-            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.2)' } }
-          }
-        }
-      });
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.className = "nav-tab px-4 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800";
-      });
-
-      const targetTab = document.getElementById(tabId);
-      if (targetTab) targetTab.classList.remove('hidden');
-
-      const activeBtn = document.getElementById(`nav-${tabId}`);
-      if (activeBtn) {
-        activeBtn.className = "nav-tab px-4 py-2 text-xs font-bold rounded-lg whitespace-nowrap transition flex items-center gap-2 bg-brand-600 text-white shadow-md";
-      }
-
-      if (tabId === 'tab-dashboard') updateDashboard();
-      if (tabId === 'tab-history') renderHistoryTable();
-      if (tabId === 'tab-payroll') renderPayrollSummary();
-      if (tabId === 'tab-transport') renderTransportSummary();
-      if (tabId === 'tab-settings') updateDiagnostics();
-    }
-
-    function exportFullCSV() {
-      if (dailyLogs.length === 0) {
-        showToast("No data to export", "error");
-        return;
-      }
-
-      const headers = [
-        "ID", "Date", "Wash Cycles", "Dryer Cycles", "Elec kWh", "Elec Rate", 
-        "Water kL", "Water Rate", "Direct Expenses (ZAR)", "Gross Income (ZAR)", 
-        "Labor Cost (ZAR)", "Transport Expense (ZAR)", "Total Expenses (ZAR)", "Net Profit (ZAR)"
-      ];
-
-      const rows = dailyLogs.map(l => [
-        l.id, l.date, l.wash_cycles, l.dryer_cycles, l.electricity_kwh, l.electricity_rate,
-        l.water_kl, l.water_rate, l.direct_expenses, l.daily_income,
-        l.labor_cost, l.transport_expense, l.total_expenses, l.net_profit
-      ]);
-
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `FreshStart_Laundromat_Logs_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      showToast("Downloaded Operations CSV Log!", "success");
+      downloadCSVFile(csv, 'fresh_start_shift_logs.csv');
     }
 
     function exportPayrollCSV() {
-      const workerMap = {};
-      dailyLogs.forEach(log => {
-        if (log.employees && Array.isArray(log.employees)) {
-          log.employees.forEach(emp => {
-            if (!emp.name) return;
-            const k = emp.name.trim();
-            if (!workerMap[k]) workerMap[k] = { shifts: 0, hours: 0, earnings: 0 };
-            const h = parseFloat(emp.hours) || 0;
-            const r = parseFloat(emp.rate) || 0;
-            workerMap[k].shifts += 1;
-            workerMap[k].hours += h;
-            workerMap[k].earnings += (h * r);
-          });
-        }
+      if (payrollRecords.length === 0) return showToast('No data to export', 'error');
+      let csv = 'ID,Date,StaffName,Role,Hours,HourlyRateR,TotalPayR\n';
+      payrollRecords.forEach(p => {
+        csv += `"${p.id}","${p.date}","${p.staff}","${p.role}",${p.hours},${p.rate},${p.totalPay}\n`;
       });
+      downloadCSVFile(csv, 'fresh_start_payroll.csv');
+    }
 
-      const rows = [["Employee Name", "Shifts Worked", "Total Hours", "Total Earnings (ZAR)"]];
-      Object.keys(workerMap).forEach(k => {
-        rows.push([k, workerMap[k].shifts, workerMap[k].hours.toFixed(1), workerMap[k].earnings.toFixed(2)]);
+    function exportTransportCSV() {
+      if (transportRecords.length === 0) return showToast('No data to export', 'error');
+      let csv = 'ID,Date,Driver,KmStart,KmEnd,DistanceKm,FuelCostR,Vehicle,Purpose\n';
+      transportRecords.forEach(t => {
+        csv += `"${t.id}","${t.date}","${t.driver}",${t.kmStart},${t.kmEnd},${t.distance},${t.fuel},"${t.vehicle}","${t.purpose}"\n`;
       });
+      downloadCSVFile(csv, 'fresh_start_transport.csv');
+    }
 
-      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      const link = document.createElement("a");
-      link.setAttribute("href", encodeURI(csvContent));
-      link.setAttribute("download", `FreshStart_Payroll_Summary_${new Date().toISOString().split('T')[0]}.csv`);
+    function downloadCSVFile(csvContent, fileName) {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      showToast("Downloaded Payroll CSV Summary!", "success");
     }
 
-    function openSqlModal() {
-      document.getElementById('sqlModal').classList.remove('hidden');
+    function toggleSupabaseModal() {
+      const modal = document.getElementById('supabase-modal');
+      modal.classList.toggle('hidden');
     }
 
-    function closeSqlModal() {
-      document.getElementById('sqlModal').classList.add('hidden');
-    }
-
-    function copySqlCode() {
-      const text = document.getElementById('sqlCodeText').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        showToast("Copied SQL Schema script to clipboard!", "success");
-      }).catch(() => {
-        // Fallback copy execution
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showToast("Copied SQL Schema script!", "success");
-      });
-    }
-
-    async function testSupabaseConnection() {
-      const diagMsg = document.getElementById('diagMessage');
-      diagMsg.innerText = "Testing Supabase REST API endpoint...";
-      diagMsg.className = "text-amber-400";
-
-      if (!supabaseClient) {
-        diagMsg.innerText = "Error: Supabase JS library not loaded.";
-        diagMsg.className = "text-rose-400";
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient.from('daily_logs').select('id').limit(1);
-        if (error) {
-          diagMsg.innerText = `Supabase Connected! Table 'daily_logs' status: ${error.message}. (Click 'SQL Setup' to run the table creation script in Supabase dashboard).`;
-          diagMsg.className = "text-amber-300";
-          updateSyncBadge(false, "Local Backup Mode (SQL table pending)");
-          showToast("Cloud active - SQL table needs creation", "info");
-        } else {
-          diagMsg.innerText = `Success! Supabase connection active & 'daily_logs' table verified. Data query returned ${data.length} row(s).`;
-          diagMsg.className = "text-emerald-400";
-          updateSyncBadge(true, "Supabase Live Sync");
-          showToast("Supabase Database Live & Connected!", "success");
-        }
-      } catch (err) {
-        diagMsg.innerText = `Connection Failed: ${err.message || 'Network error'}`;
-        diagMsg.className = "text-rose-400";
-      }
-    }
-
-    function updateDiagnostics() {
-      const diagMsg = document.getElementById('diagMessage');
-      if (isCloudLive) {
-        diagMsg.innerText = "Status: Connected & Synchronized with Supabase Cloud Postgres.";
-        diagMsg.className = "text-emerald-400";
-      } else {
-        diagMsg.innerText = "Status: Operating with local browser storage fallback. Pre-filled credentials ready.";
-        diagMsg.className = "text-amber-300";
-      }
-    }
-
-    function seedSampleData() {
-      dailyLogs = getSampleLogs();
-      localStorage.setItem('freshstart_logs', JSON.stringify(dailyLogs));
-
-      if (supabaseClient) {
-        dailyLogs.forEach(async (log) => {
-          try {
-            await supabaseClient.from('daily_logs').upsert(log, { onConflict: 'date' });
-          } catch(e){}
-        });
-      }
-
-      calculateTotals();
-      renderHistoryTable();
-      updateDashboard();
-      showToast("Loaded 7 days of realistic laundromat demo data!", "success");
-    }
-
-    function getSampleLogs() {
-      return [
-        {
-          id: "log_20261002",
-          date: "2026-10-02",
-          wash_cycles: 32,
-          dryer_cycles: 28,
-          electricity_kwh: 48.5,
-          electricity_rate: 3.20,
-          water_kl: 2.1,
-          water_rate: 35.00,
-          direct_expenses: 350.00,
-          daily_income: 3850.00,
-          labor_cost: 584.00,
-          transport_expense: 208.00,
-          total_expenses: 1370.70,
-          net_profit: 2479.30,
-          employees: [
-            { id: "e1", name: "Thandi", hours: 8, rate: 38 },
-            { id: "e2", name: "Sipho", hours: 8, rate: 35 }
-          ],
-          trips: [
-            { id: "t1", driver: "Johan", route: "CBD -> Wilderness Hotel", distance: 24, rate: 6.50 },
-            { id: "t2", driver: "Johan", route: "Shop -> Heatherlands", distance: 8, rate: 6.50 }
-          ],
-          created_at: "2026-10-02T16:00:00Z"
-        },
-        {
-          id: "log_20261001",
-          date: "2026-10-01",
-          wash_cycles: 29,
-          dryer_cycles: 26,
-          electricity_kwh: 44.0,
-          electricity_rate: 3.20,
-          water_kl: 1.9,
-          water_rate: 35.00,
-          direct_expenses: 280.00,
-          daily_income: 3420.00,
-          labor_cost: 584.00,
-          transport_expense: 169.00,
-          total_expenses: 1240.30,
-          net_profit: 2179.70,
-          employees: [
-            { id: "e1", name: "Thandi", hours: 8, rate: 38 },
-            { id: "e2", name: "Sipho", hours: 8, rate: 35 }
-          ],
-          trips: [
-            { id: "t1", driver: "Sipho", route: "Shop -> Kingswood Estate", distance: 12, rate: 6.50 },
-            { id: "t2", driver: "Sipho", route: "Shop -> Blanco Commercial", distance: 14, rate: 6.50 }
-          ],
-          created_at: "2026-10-01T16:00:00Z"
-        },
-        {
-          id: "log_20260930",
-          date: "2026-09-30",
-          wash_cycles: 35,
-          dryer_cycles: 31,
-          electricity_kwh: 52.0,
-          electricity_rate: 3.20,
-          water_kl: 2.3,
-          water_rate: 35.00,
-          direct_expenses: 410.00,
-          daily_income: 4200.00,
-          labor_cost: 651.00,
-          transport_expense: 260.00,
-          total_expenses: 1567.90,
-          net_profit: 2632.10,
-          employees: [
-            { id: "e1", name: "Thandi", hours: 8, rate: 38 },
-            { id: "e2", name: "Anelisa", hours: 8, rate: 36 },
-            { id: "e3", name: "Johan", hours: 4, rate: 45 }
-          ],
-          trips: [
-            { id: "t1", driver: "Johan", route: "George Airport Guest House", distance: 40, rate: 6.50 }
-          ],
-          created_at: "2026-09-30T16:00:00Z"
-        },
-        {
-          id: "log_20260929",
-          date: "2026-09-29",
-          wash_cycles: 24,
-          dryer_cycles: 20,
-          electricity_kwh: 36.0,
-          electricity_rate: 3.20,
-          water_kl: 1.5,
-          water_rate: 35.00,
-          direct_expenses: 210.00,
-          daily_income: 2850.00,
-          labor_cost: 584.00,
-          transport_expense: 104.00,
-          total_expenses: 1065.70,
-          net_profit: 1784.30,
-          employees: [
-            { id: "e1", name: "Thandi", hours: 8, rate: 38 },
-            { id: "e2", name: "Sipho", hours: 8, rate: 35 }
-          ],
-          trips: [
-            { id: "t1", driver: "Sipho", route: "Denneoord Residential", distance: 16, rate: 6.50 }
-          ],
-          created_at: "2026-09-29T16:00:00Z"
-        }
-      ];
+    function saveSupabaseSettings() {
+      const url = document.getElementById('supabase-url-input').value.trim();
+      const key = document.getElementById('supabase-key-input').value.trim();
+      localStorage.setItem('fs_supabase_url', url);
+      localStorage.setItem('fs_supabase_key', key);
+      toggleSupabaseModal();
+      showToast('Supabase settings saved!', 'success');
     }
 
     function showToast(message, type = 'info') {
-      const container = document.getElementById('toastContainer');
+      const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
 
-      const colors = {
-        success: 'bg-emerald-950/90 border-emerald-600 text-emerald-200',
-        error: 'bg-rose-950/90 border-rose-600 text-rose-200',
-        info: 'bg-slate-900/90 border-brand-500 text-brand-200'
+      const bgColors = {
+        success: 'bg-emerald-600 text-white',
+        error: 'bg-rose-600 text-white',
+        info: 'bg-slate-800 text-slate-100 border border-slate-700'
       };
 
-      const icons = {
-        success: 'fa-circle-check text-emerald-400',
-        error: 'fa-circle-xmark text-rose-400',
-        info: 'fa-circle-info text-brand-400'
-      };
-
-      toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur text-xs font-semibold transition-all duration-300 transform translate-x-10 opacity-0 ${colors[type] || colors.info}`;
-      toast.innerHTML = `
-        <i class="fa-solid ${icons[type] || icons.info} text-base"></i>
-        <span>${message}</span>
-      `;
+      toast.className = `px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold flex items-center space-x-2 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${bgColors[type] || bgColors.info}`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${message}</span>`;
 
       container.appendChild(toast);
 
+      // Animate in
       setTimeout(() => {
-        toast.classList.remove('translate-x-10', 'opacity-0');
+        toast.classList.remove('translate-y-2', 'opacity-0');
       }, 10);
 
+      // Auto dismiss
       setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-x-10');
+        toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => toast.remove(), 300);
-      }, 3500);
+      }, 3000);
     }
   </script>
 </body>
